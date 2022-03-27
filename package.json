@@ -1,23 +1,19 @@
 {
   "name": "spell.engine",
   "version": "2.0.0",
-  "description": "Pixel art based game engine",
-  "main": "game.js",
+  "description": "A Schedule game engine for study",
+  "main": "./src/game.js",
   "scripts": {
     "test": "npx jest",
-    "build": "npx gulp build",
-    "start": "npx gulp build_watch"
+    "start": "npx webpack"
   },
   "keywords": [
-    "game",
-    "engine",
-    "2d",
-    "pixel",
-    "art"
+    "game"
   ],
   "author": "Eder Costa",
   "license": "ISC",
   "devDependencies": {
+    "jest": "^27.5.1",
     "webpack": "^5.70.0"
   },
   "dependencies": {
