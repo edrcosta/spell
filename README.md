@@ -4,6 +4,8 @@ This project was born from the will of doing a game engine from scratch. I have 
 
 This its a pasion project not a production one, the drive of this project its to study.
 
+If you need a game engine i sugest to use Matter.js that its an amazing minimalistic engine.
+
 ### Spell Engine 
 
 Spell its not exacly a game engine, because has no colision yet.
