@@ -36,12 +36,9 @@ export default class SpellAudio
         }
     }
 
-    /**
-     * Stop a song by id
-     * @param {string} id 
-     
     static stop(id){
-        // SpellAudio.files[id]
+        SpellAudio.playing[id].pause()
+        SpellAudio.playing[id].currentTime = 0
     }
 
     /**
