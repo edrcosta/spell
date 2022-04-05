@@ -14,6 +14,9 @@ export default class SpellCanvas {
         this.fixDpi()
     }
 
+    /**
+     * Make the canvas HTML element fullscreen
+     */
     setFullWindow(){
         this.fullySize()
         document.addEventListener('resize', this.fullySize())
@@ -65,8 +68,6 @@ export default class SpellCanvas {
 
         return { width, height }
     }
-
-    
 
     /**
      * Update the canvas element size into the full available screen
@@ -231,10 +232,4 @@ export default class SpellCanvas {
      * Show the canvas on DOM 
      */
     show = () => this.element.style.display = 'block'
-}
-
-if(typeof module !== 'undefined' && typeof module.exports !== 'undefined'){
-    module.exports = {
-        SpellCanvas
-    }
 }

@@ -1,8 +1,6 @@
 import { System, Polygon } from 'detect-collisions'
 
 export default class SpellColission {
-    // system
-
     system
     objects = {}
 

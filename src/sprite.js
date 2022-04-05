@@ -12,6 +12,7 @@ export default class SpellSprite {
     colors;
     position = { x: 0, y: 0 }
     data = {}
+
     // Image sprites
     src
     element

@@ -6,7 +6,6 @@ import SpellLoader from './sprite-loader'
 import SpellMath from './math'
 import SpellMouse from './mouse'
 import SpellPatterns from './pattern-generator'
-import SpellSprite from './sprite'
 import SpellWebSocket from './websocket'
 import { DEBUG_PERFORMANCE, DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
 

@@ -36,7 +36,14 @@ export default class SpellAudio
         }
     }
 
+    /**
+     * stop an audio been played
+     * @param {string} id 
+     */
     static stop(id){
+        if(typeof SpellAudio.playing[id] === 'undefined'){
+            return false;
+        }
         SpellAudio.playing[id].pause()
         SpellAudio.playing[id].currentTime = 0
     }

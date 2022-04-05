@@ -14,28 +14,47 @@ export default class SpellLoader {
     /**
      * Preloads an image list
      * @param {*} imageList 
-     * @returns 
      */
     preload(imageList){
         // start download images as spell sprite instances
         this.imageList = imageList
-        Object.keys(this.imageList).forEach((id) => {
-            const path = this.imageList[id]
-            this.imageList[id] = new SpellSprite() // instance of sprite
-            this.loading.push(this.imageList[id].setImageFile(path)) // set image 
-            if(DEBUG && DEBUG_SPRITE_LOADING)
-                console.log('downloading:', this.imageList[id])
-        })
-
+        
+        Object.keys(this.imageList).forEach(this.preloadImage)
+        
         // await preloading images and initialize the game
         Promise.all(this.loading).then(() => {
-            setTimeout(() => {
-                this.loaded = true           
-                this.afterLoadCallback({ images: this.imageList })
-                if(DEBUG) console.log('SPELL: All assets loaded')
-            }, 1000);
+            setTimeout(this.afterLoadHanddle, 1000);
         })
+
         return this
+    }
+
+    /**
+     * Triggers the game start
+     */
+    afterLoadHanddle = () => {
+        this.loaded = true           
+        this.afterLoadCallback({ images: this.imageList })
+        if(DEBUG) {
+            console.log('SPELL: All assets loaded')
+        }
+    }
+
+    /**
+     * Preloads a single image file
+     * @param {string} id 
+     */
+    preloadImage = (id) => {
+        const path = this.imageList[id]
+
+        // instance of sprite
+        this.imageList[id] = new SpellSprite()
+        // set image
+        this.loading.push(this.imageList[id].setImageFile(path)) 
+
+        if(DEBUG && DEBUG_SPRITE_LOADING){
+            console.log('downloading:', this.imageList[id])
+        }
     }
 
     /**
