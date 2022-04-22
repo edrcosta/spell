@@ -5,7 +5,6 @@ import SpellKeyboard from './keyboard'
 import SpellLoader from './sprite-loader'
 import SpellMath from './math'
 import SpellMouse from './mouse'
-import SpellPatterns from './pattern-generator'
 import SpellWebSocket from './websocket'
 import { DEBUG_PERFORMANCE, DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
 
@@ -18,36 +17,27 @@ import { DEBUG_PERFORMANCE, DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
  * - render sprites 
  */
 export default class SpellGame {
-    // Libraries 
     canvas
     keyboard
     math
     websocket = false
     colision
-
     isFirstFrame = true
     frameCount = 0
-    // Clock control variabless
     framesPersecond = 40
     frameInterval = 0
     lastGameLoopTimeStamp = false
-
     coordSystem = 'web' // @todo fix the cartesian system
     singleLevelCallback = false
-
     timmerInterval = false
     timmer = 0
-
     paused = false
-
-    // for timmer callbacks 
     currentCallObject = {
         time: 0,
         callback: null,
         stop: 0,
         startedAt: false
     }
-    
     timmerCallbackList = []
     timmerCallbackIdStack = []
     patternGenerator
@@ -59,9 +49,7 @@ export default class SpellGame {
         this.canvas = new SpellCanvas(this.gameCanvasId, this.debugger)
         this.keyboard = new SpellKeyboard()
         this.loader = new SpellLoader(this.getUserHelperSpace())
-        this.patternGenerator = new SpellPatterns()
         this.colision = new SpellColission(this.canvas)
-        SpellMouse.initialize(this.gameCanvasId)
         this.startWhenLoaded()
     }
 
@@ -193,17 +181,17 @@ export default class SpellGame {
      */
     getUserHelperSpace = () => {
         return {
+            game: this,
             canvas: this.canvas, 
             keyboard: this.keyboard.keyPress, 
-            math: SpellMath,
             isFirstFrame: this.isFirstFrame,
             frameCount: this.frameCount,
-            game: this,
-            mouse: SpellMouse,
-            audio: SpellAudio,
             patterns: this.patternGenerator,
             websocket: this.websocket,
-            colision: this.colision
+            colision: this.colision,
+            math: SpellMath,
+            mouse: SpellMouse,
+            audio: SpellAudio,
         }
     }
 

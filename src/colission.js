@@ -46,16 +46,14 @@ export default class SpellColission {
     }
 
     isTwoBoxesColiding(elementAId, elementBId){
+        // if (elementBId !== 'box0'){
+        //     return false
+        // }
+        // const potentials = this.system.getPotentials(this.objects[elementAId].element);
+        // console.log(potentials)
 
-
-        if (elementBId !== 'box0'){
-            return false
-        }
-        const potentials = this.system.getPotentials(this.objects[elementAId].element);
-        console.log(potentials)
-
-        console.log('player', this.objects[elementAId].element.pos.x, this.objects[elementAId].element.pos.y)        
-        console.log('box', this.objects[elementBId].element.pos.x, this.objects[elementBId].element.pos.y)
+        // console.log('player', this.objects[elementAId].element.pos.x, this.objects[elementAId].element.pos.y)        
+        // console.log('box', this.objects[elementBId].element.pos.x, this.objects[elementBId].element.pos.y)
             // console.log(potentials)
 
         // this.system.getPotentials(this.objects[elementAId].element).forEach((collider) => {

@@ -1,6 +1,6 @@
 export default class SpellMouse{
     static position = {
-        x: null, y: null
+        x: 0, y: 0
     }
 
     static clicked = false
