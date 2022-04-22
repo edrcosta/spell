@@ -4,9 +4,7 @@
   "description": "A Schedule game engine for study",
   "main": "./src/game.js",
   "scripts": {
-    "test": "npx jest",
-    "start": "npx webpack",
-    "coverage": "npx jest --collect-coverage"
+    "start": "npx webpack"
   },
   "keywords": [
     "game"
