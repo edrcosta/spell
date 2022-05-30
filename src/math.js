@@ -1,9 +1,5 @@
 import SpellMathCache from './memory-cache'
 
-/**
- * Why a simple math class? because we gona memory cache LOL 
- * @todo memory check
- */
 export default class SpellMath {
     /**
      * return a random number bettween a range
