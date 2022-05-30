@@ -8,14 +8,6 @@ import SpellMouse from './mouse'
 import SpellWebSocket from './websocket'
 import { DEBUG_PERFORMANCE, DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
 
-/**
- * This class handdle the game loop 
- * 
- * - Game loop frame rate control
- * - game timmer 
- * - multi level system 
- * - render sprites 
- */
 export default class SpellGame {
     canvas
     keyboard
@@ -27,7 +19,7 @@ export default class SpellGame {
     framesPersecond = 40
     frameInterval = 0
     lastGameLoopTimeStamp = false
-    coordSystem = 'web' // @todo fix the cartesian system
+    coordSystem = 'web'
     singleLevelCallback = false
     timmerInterval = false
     timmer = 0
@@ -41,6 +33,8 @@ export default class SpellGame {
     timmerCallbackList = []
     timmerCallbackIdStack = []
     patternGenerator
+    isNextSecond = 0
+    isNextHalfSecond = 0
 
     constructor(gameCanvasId, framesPersecond) {
         this.gameCanvasId = gameCanvasId
@@ -53,29 +47,25 @@ export default class SpellGame {
         this.startWhenLoaded()
     }
 
-    /**
-     * Setup the preloading list of images 
-     * @param {image list} imageList 
-     * @returns 
-     */
+    pause = () => this.paused = true
+    unpause = () => this.paused = false
+
     preload = (imageList) => {
+        if(typeof imageList !== 'object'){
+            throw new Error('SPELL image list must be an object of images');
+        }
         this.loader.preload(imageList)
         return this
     }
 
-    /**
-     * setup the after load callback 
-     * @param {function} callback 
-     * @returns 
-     */
     afterLoad = (callback) => {
+        if(typeof callback !== 'function'){
+            throw new Error('SPELL after loading callback must be a function');
+        }
         this.loader.afterLoad(callback)
         return this
     }
 
-    /**
-     * Simply start the game after preloading
-     */
     startWhenLoaded(){
         let loaderCheck = setInterval(() => {
             if(this.loader.loaded){
@@ -85,29 +75,16 @@ export default class SpellGame {
         }, 50);
     }
 
-    /**
-     * define game keys to be captured and send to frame method
-     * 
-     * @param {Array<string>} keys 
-     */
-     setKeyboard = (keys) => {
+    setKeyboard = (keys) => {
         this.keys = keys
         this.keyboard.startListemKeyboard(this.keys)
         return this
-     }
+    }
 
-    /**
-     * Start the game rendering
-     */
     start() {
         window.requestAnimationFrame(this.gameLoop)
     }
 
-    /**
-     * Keep requestAnimationFrame into the frame rate defined by the Game developer
-     * 
-     * @note canvas dont has a frame rate system build in 
-     */    
     _frameRateCheck(){
         if (!this.lastGameLoopTimeStamp) this.lastGameLoopTimeStamp = new Date()
 
@@ -120,65 +97,46 @@ export default class SpellGame {
         return false
     }
 
-
-    /**
-     * Update game frame information status
-     */
     _updateStatusRegisters(){
         this.isFirstFrame = false
         this.keys ? this.keyboard.resetKeyboard(this.keys) : false
         this.frameCount++
     }
 
-    /**
-     * Allow to just use an callback  instead of a level class
-     * 
-     * @param {*} singleLevelCallback 
-     * @returns 
-     */
     setGameLoop(singleLevelCallback){
         this.singleLevelCallback = singleLevelCallback
         return this
     }
 
-    /**
-     * Create websocket client instance and try to connect
-     * @param {string} url 
-     * @param {string} protocols 
-     */
+    renderStop = () => this.stopRendering = true;
+
+    renderGo = () => this.stopRendering = false;
+
+    setFrameSpeed(framesPersecond){
+        this.framesPersecond = framesPersecond
+        this.frameInterval = 1000 / this.framesPersecond
+    }
+
     enableWebSocket = (url, protocols) => {
         this.websocket = new SpellWebSocket()
         this.websocket.initialize(url, protocols)
         return this
     }
 
-    /**
-     * play game execution
-     * @returns bool
-     */
-    pause = () => this.paused = true
-
-    /**
-     * Stop the game execution
-     * @returns bool
-     */
-    unpause = () => this.paused = false
-
-    /**
-     * Start a 1 second interval that increment a counter if the game is not paused
-     */
     initializeTimmer(){
+        this.timerModCount = 0
         this.timmerInterval = setInterval(() => {
             if(this.paused === false)
                 this.timmer+=0.5
+                this.isNextHalfSecond = true;
+                this.timerModCount++
+                if(this.timerModCount == 2){
+                    this.timerModCount = 0;
+                    this.isNextSecond = true
+                }
         }, 500);
     }
 
-    /**
-     * inject the current instance of each spell tool into the user  function
-     * 
-     * @returns spell
-     */
     getUserHelperSpace = () => {
         return {
             game: this,
@@ -192,21 +150,23 @@ export default class SpellGame {
             math: SpellMath,
             mouse: SpellMouse,
             audio: SpellAudio,
+            isNextSecond: this.isNextSecond,
+            isNextHalfSecond: this.isNextHalfSecond,
+            render:{
+                stop: this.renderStop,
+                play: this.renderGo,
+                setFrameRate: this.setFrameSpeed
+            }
         }
     }
 
-    /**
-     * Game loop method 
-     * 
-     * !called in the frameRate specify by the user 
-     * 
-     * @note using requestAnimationFrame instead of setInterval, not block the event loop 
-     */
     gameLoop = () => {
         // check frame rate skip 
         if(this.timmerInterval === false)
             this.initializeTimmer()
         if (!this._frameRateCheck())
+            return window.requestAnimationFrame(this.gameLoop) // to next loop
+        if(this.stopRendering)
             return window.requestAnimationFrame(this.gameLoop) // to next loop
 
         // create new spell userland 
@@ -239,5 +199,7 @@ export default class SpellGame {
         SpellMouse.clicked = false
         this._updateStatusRegisters()
         window.requestAnimationFrame(this.gameLoop) // to next loop
+        this.isNextHalfSecond = false;
+        this.isNextSecond = false;
     }
 }
