@@ -16,6 +16,9 @@ module.exports = {
     './src/sprite.js',
   ],
   watch: true,
+  optimization: {
+    minimize: false
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
