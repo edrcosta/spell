@@ -84,17 +84,4 @@ export default class SpellMath {
 
         return SpellMathCache.add(id, op)
     }
-
-    static cachedOp(id_, opcallback){
-        const id = `${id_}__cached`
-
-        const cached = SpellMathCache.get(id)
-        if(cached) {
-            return cached
-        }
-
-        const op = opcallback()
-
-        return SpellMathCache.add(id, op)
-    }
 }
