@@ -1,25 +1,12 @@
-() => {
-    console.log('aqui')
-    alert('oi')
+import SpellGame from "../src/game";
+
+const FPS = 30;
+const canvasId = 'hello-world';
+
+const HELLO_WORLD = ({ isFirstFrame, canvas, game }) => {
+    canvas.setBackgroundColor('red')
 }
-// const FPS = 30;
-// const GAME_NAME = 'hello-world';
 
-// let colors = [
-//     'red',
-//     'green',
-//     'yellow',
-// ]
+const JumpGame = new SpellGame(canvasId, FPS)
 
-// const HELLO_WORLD = (spell) => {
-//     const { isFirstFrame, canvas, game } = spell
-
-//     canvas.drawPixel(canvas.horizontal(50), canvas.vertical(50), colors.pop(), 100, 100)
-
-// }
-
-// const JumpGame = new SpellGame(GAME_NAME, FPS)
-
-// JumpGame.setGameLoop(HELLO_WORLD)
-
-    
+JumpGame.setGameLoop(HELLO_WORLD)

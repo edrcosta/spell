@@ -8,6 +8,9 @@ module.exports = {
     '../examples/hello-world.js',
   ],
   watch: true,
+  optimization: {
+    minimize: false
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'examples.bundle.js',
