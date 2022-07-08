@@ -9,6 +9,9 @@ export default class SpellColission {
         this.canvas = canvas
     }
 
+    /**
+     * Return box conner coords
+     */
     getConners = (box) => [
         { x: box.x, y: box.y },
         { x: box.x + box.width, y:  box.y },
@@ -19,7 +22,6 @@ export default class SpellColission {
     createElementBox(id, box){
         if (typeof this.objects[id] !== 'undefined') return false
         const boxPoligon = this.getConners(box)
-
         this.objects[id] = {
             width: box.width,
             height: box.height,
@@ -27,7 +29,6 @@ export default class SpellColission {
             poligon: boxPoligon,
             element: new Polygon({ x: box.x, y: box.y }, boxPoligon),
         }
-
         this.system.insert(this.objects[id].element);
     }
 
@@ -39,7 +40,6 @@ export default class SpellColission {
 
     debug(poligon, color){
         color = typeof color === 'string' ? color : 'green'
-        
         poligon.forEach((xxx) => {
             this.canvas.drawPixel(xxx.x, xxx.y, color, 5, 5)
         })

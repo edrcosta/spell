@@ -3,7 +3,6 @@ export default class SpellKeyboard {
     
     /**
      * set keyboard back to false 
-     * @param {*} keys 
      */
     resetKeyboard(keys){
         for (let i = 0; i < keys.length; i++) 
@@ -12,8 +11,6 @@ export default class SpellKeyboard {
 
     /**
      * Map keyboard into game key map
-     * 
-     * @param {*} keys 
      */
     startListemKeyboard = (keys) => {
         if (!this.keyPress)

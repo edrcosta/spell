@@ -14,6 +14,9 @@ export default class SpellCanvas {
         this.fixDpi()
     }
 
+    /**
+     * set resize listenner to resize the canvas
+     */
     setFullWindow(){
         this.fullySize()
         document.addEventListener('resize', this.fullySize())
@@ -25,18 +28,29 @@ export default class SpellCanvas {
         return check;
     };
 
+    /**
+     * Return the percentual of window width
+     */
     horizontal = (percentual) =>{ 
         if ( navigator.platform != "iPad" && navigator.platform != "iPhone" && navigator.platform != "iPod" )
 		    return SpellMath.percentualOf(percentual, window.innerWidth) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().width)
     }
   
+    /**
+     * return the percentual of the window height
+     * @param {Number} percentual 
+     * @returns 
+     */
     vertical = (percentual) => {
         if ( navigator.platform != "iPad" && navigator.platform != "iPhone" && navigator.platform != "iPod" )
 		    return SpellMath.percentualOf(percentual, window.innerHeight) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().height)
     }
     
+    /**
+     * return window current dimensions
+     */
     getWindowDimensions(){
         const height = Math.max(
             document.body.scrollHeight, document.documentElement.scrollHeight,
@@ -53,18 +67,27 @@ export default class SpellCanvas {
         return { width, height }
     }
 
+    /**
+     * Set canvas to full window size
+     */
     fullySize(){
         this.element.style.height = window.innerHeight+ 'px';
         this.element.style.width = window.innerWidth+ 'px';
         this.fixDpi()
     }
 
+    /**
+     * Whell... the name its very ok for this one
+     */
     getRandomInt = (max, min) => SpellMath.getRandomInt(max, min)
 
     clear() {
         this.context.clearRect(0, 0, this.element.width, this.element.height)
     }
 
+    /**
+     * Fix blurry canvas line
+     */
     fixDpi() {
         const styleHeight = +getComputedStyle(this.element).getPropertyValue("height").slice(0, -2)
         const styleWidth = +getComputedStyle(this.element).getPropertyValue("width").slice(0, -2)
@@ -72,6 +95,15 @@ export default class SpellCanvas {
         this.element.setAttribute('width', styleWidth * window.devicePixelRatio)
     }
 
+    /**
+     * Draw single pixel on screen
+     * @param {Number} x 
+     * @param {Number} y 
+     * @param {string} color 
+     * @param {number} pixelW 
+     * @param {number} pixelH 
+     * @returns 
+     */
     drawPixel(x, y, color, pixelW = 10, pixelH = 10) {
         if(typeof pixelH === 'undefined'){
             pixelH = pixelW
@@ -82,10 +114,28 @@ export default class SpellCanvas {
         return this
     }
 
+    drawPixelArray(pixels){
+        if(typeof pixels !== 'object'){
+            throw new Error('SPELL:', 'you must send an array of pixels')
+        }
+        pixels.forEach((pixel) => {
+            this.drawPixel(...pixel)
+        })
+    }
+
+    /**
+     * Draw array of pixel bimaps
+     * @param {*} spriteClasses 
+     */
     drawPixelSprites(spriteClasses){
         spriteClasses.forEach((sprite) => this.drawPixelSprite(sprite))
     }
 
+    /**
+     * Draw single pixel bitmap
+     * @param {*} spriteClass 
+     * @returns 
+     */
     drawPixelSprite(spriteClass) {
         let x = spriteClass.position.x
         let y = spriteClass.position.y
@@ -106,7 +156,7 @@ export default class SpellCanvas {
         })
         return this
     }
-
+    
     drawImage({ sprite, width, height, flipped, angle }) {
         this.__drawImageOnCanvas({ sprite, width, height, flipped, angle })
         return this

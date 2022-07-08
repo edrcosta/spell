@@ -6,7 +6,8 @@ import SpellLoader from './sprite-loader'
 import SpellMath from './math'
 import SpellMouse from './mouse'
 import SpellWebSocket from './websocket'
-import { DEBUG_PERFORMANCE, DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
+import Debugger from './game-debugger'
+import { DEBUG_PERFORMANCE, DEBUG } from './game-debugger'
 
 export default class SpellGame {
     canvas
@@ -139,6 +140,10 @@ export default class SpellGame {
 
     getUserHelperSpace = () => {
         return {
+            debug: Debugger,
+            math: SpellMath,
+            mouse: SpellMouse,
+            audio: SpellAudio,
             game: this,
             canvas: this.canvas, 
             keyboard: this.keyboard.keyPress, 
@@ -147,9 +152,6 @@ export default class SpellGame {
             patterns: this.patternGenerator,
             websocket: this.websocket,
             colision: this.colision,
-            math: SpellMath,
-            mouse: SpellMouse,
-            audio: SpellAudio,
             isNextSecond: this.isNextSecond,
             isNextHalfSecond: this.isNextHalfSecond,
             render:{
@@ -192,7 +194,10 @@ export default class SpellGame {
         // debug
         const userTime = end - start
         if(DEBUG && DEBUG_PERFORMANCE){
-            console.log('Frame render time:', userTime)
+            console.log('SPELL:', userTime, 'ms per frame of a max', this.frameInterval, 'ms at', this.framesPersecond, 'FPS')
+            if(this.frameInterval < userTime){
+                console.log('SPELL: cant reach framerate')
+            }
         }
         
         // reset state for the next frame
