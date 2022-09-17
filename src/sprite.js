@@ -8,14 +8,27 @@ export default class SpellSprite {
     isImage = false
     beforeRenderCallback = false
     afterRenderCallback = false
+    width = 0
+    height = 0
+    angle = 0
 
-    constructor(imageFile){
+    constructor(imageFile, size){
         if(typeof imageFile === 'string'){
             this.setImageFile(imageFile)
         }
+
+        if(size && size.width && size.height){
+            this.width = size.width ? size.width : 0
+            this.height = size.height ? size.height : 0
+        }
     }
 
-    setImageFile = (src) => new Promise((resolve)=> {
+    setImageFile = (src, size) => new Promise((resolve)=> {
+        if(typeof size !== 'undefined'){
+            this.width = size.width
+            this.height = size.height
+        }
+
         this.isImage = true
         this.element = new Image()
         this.element.src = src
@@ -53,10 +66,10 @@ export default class SpellSprite {
     incrementX = (x) => this.position.x += x
     incrementY = (y) => this.position.y += y
     change = (sprite) => this.bitmap = sprite
+    setAngle = (angle) => this.angle = angle
 
-    /** Create a copy of this sprite */
     clone(){
-        let spriteClone = new SpellSprite();
+        let spriteClone = new SpellSprite(this.element.src, { width: this.width, height: this.height });
 
         if (this.isImage){
             spriteClone.setImageFile(this.element.src)
@@ -67,7 +80,7 @@ export default class SpellSprite {
                 pixelSize: this.pixelSize            
             })
         }
-        
+    
         spriteClone.setPosition(this.position)
         return spriteClone
     }

@@ -8,6 +8,9 @@ export default class SpellCanvas {
 
     constructor(canvasId, _debugger) {
         let element = document.getElementById(canvasId)
+        if(!element){
+            throw new Error('SPELL: You must set a valid canvas ID');
+        }
         this.debugger = _debugger
         this.element = element
         this.context = element.getContext('2d')
@@ -32,6 +35,10 @@ export default class SpellCanvas {
      * Return the percentual of window width
      */
     horizontal = (percentual) =>{ 
+        if(typeof percentual !== 'number'){
+            throw new Error('SPELL: horizontal percentual must be a number')
+        }
+
         if ( navigator.platform != "iPad" && navigator.platform != "iPhone" && navigator.platform != "iPod" )
 		    return SpellMath.percentualOf(percentual, window.innerWidth) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().width)
@@ -43,6 +50,10 @@ export default class SpellCanvas {
      * @returns 
      */
     vertical = (percentual) => {
+        if(typeof percentual !== 'number'){
+            throw new Error('SPELL: vertical percentual must be a number')
+        }
+
         if ( navigator.platform != "iPad" && navigator.platform != "iPhone" && navigator.platform != "iPod" )
 		    return SpellMath.percentualOf(percentual, window.innerHeight) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().height)
@@ -171,10 +182,19 @@ export default class SpellCanvas {
     __drawImageOnCanvas({ sprite, width, height, flipped, angle }){
         let { x, y } = sprite.position
         
-        if (typeof angle !== 'undefined')
-            this.context.rotate(angle);
+        if (typeof angle !== 'undefined'){
+            const xx = width / 2
+            const yy = height / 2
+            const rad = SpellMath.getRadians(angle)
 
-        this.context.drawImage(sprite.element, x, y, width, height)
+            this.context.save()
+            this.context.translate(x + xx, y + yy)
+            this.context.rotate(rad)
+            this.context.drawImage(element, -xx, -yy, width, height)
+            this.context.restore()    
+        }else{
+            this.context.drawImage(sprite.element, x, y, width, height)
+        }
     }
 
     setBackgroundColor = (color) => {
