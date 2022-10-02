@@ -1,11 +1,12 @@
 import SpellCanvas from './canvas'
 import SpellAudio from './audio'
-import SpellColission from './colission'
+// import SpellColission from './colission'
 import SpellKeyboard from './keyboard'
 import SpellLoader from './sprite-loader'
 import SpellMath from './math'
 import SpellMouse from './mouse'
 import SpellWebSocket from './websocket'
+import SpellFirebase from './firebase'
 import Debugger from './game-debugger'
 import { DEBUG_PERFORMANCE, DEBUG } from './game-debugger'
 
@@ -44,16 +45,18 @@ export default class SpellGame {
         this.canvas = new SpellCanvas(this.gameCanvasId, this.debugger)
         this.keyboard = new SpellKeyboard()
         this.loader = new SpellLoader(this.getUserHelperSpace())
-        this.colision = new SpellColission(this.canvas)
+        this.firebase = new SpellFirebase()
+        // this.colision = new SpellColission(this.canvas)
         this.startWhenLoaded()
     }
 
+    // control execution 
     pause = () => this.paused = true
     unpause = () => this.paused = false
 
     preload = (imageList) => {
         if(typeof imageList !== 'object'){
-            throw new Error('SPELL image list must be an object of images');
+            throw new Error('SPELL image list must be an object of images [{[key: string] : value}]');
         }
         this.loader.preload(imageList)
         return this
@@ -138,6 +141,9 @@ export default class SpellGame {
         }, 500);
     }
 
+    /**
+     * Returns user tools available to interact with spell on each frame
+     */
     getUserHelperSpace = () => {
         return {
             debug: Debugger,
@@ -154,6 +160,7 @@ export default class SpellGame {
             colision: this.colision,
             isNextSecond: this.isNextSecond,
             isNextHalfSecond: this.isNextHalfSecond,
+            firebase: this.firebase,
             render:{
                 stop: this.renderStop,
                 play: this.renderGo,
