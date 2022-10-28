@@ -1,58 +1,41 @@
-import SpellCanvas from './canvas'
-import SpellAudio from './audio'
-// import SpellColission from './colission'
-import SpellKeyboard from './keyboard'
+import Spell from './spell'
 import SpellLoader from './sprite-loader'
-import SpellMath from './math'
 import SpellMouse from './mouse'
-import SpellWebSocket from './websocket'
-import SpellFirebase from './firebase'
-import Debugger from './game-debugger'
 import { DEBUG_PERFORMANCE, DEBUG } from './game-debugger'
 
 export default class SpellGame {
-    canvas
-    keyboard
-    math
-    websocket = false
-    colision
+    // Frame rate
     isFirstFrame = true
     frameCount = 0
     framesPersecond = 40
     frameInterval = 0
     lastGameLoopTimeStamp = false
-    coordSystem = 'web'
-    singleLevelCallback = false
     timmerInterval = false
-    timmer = 0
+    // game
+    singleLevelCallback = false
     paused = false
-    currentCallObject = {
-        time: 0,
-        callback: null,
-        stop: 0,
-        startedAt: false
-    }
+    // Timmer properties
+    timmer = 0
     timmerCallbackList = []
     timmerCallbackIdStack = []
-    patternGenerator
     isNextSecond = 0
     isNextHalfSecond = 0
 
     constructor(gameCanvasId, framesPersecond) {
-        this.gameCanvasId = gameCanvasId
         this.framesPersecond = framesPersecond
         this.frameInterval = 1000 / this.framesPersecond
-        this.canvas = new SpellCanvas(this.gameCanvasId, this.debugger)
-        this.keyboard = new SpellKeyboard()
-        this.loader = new SpellLoader(this.getUserHelperSpace())
-        this.firebase = new SpellFirebase()
-        // this.colision = new SpellColission(this.canvas)
+        this.loader = new SpellLoader(this.setUserland())
         this.startWhenLoaded()
+        Spell.initialize(gameCanvasId)
     }
 
-    // control execution 
     pause = () => this.paused = true
-    unpause = () => this.paused = false
+
+    resume = () => this.paused = false
+
+    renderStop = () => this.stopRendering = true;
+
+    renderGo = () => this.stopRendering = false;
 
     preload = (imageList) => {
         if(typeof imageList !== 'object'){
@@ -81,7 +64,7 @@ export default class SpellGame {
 
     setKeyboard = (keys) => {
         this.keys = keys
-        this.keyboard.startListemKeyboard(this.keys)
+        Spell.keyboardSystem.startListemKeyboard(this.keys)
         return this
     }
 
@@ -103,69 +86,54 @@ export default class SpellGame {
 
     _updateStatusRegisters(){
         this.isFirstFrame = false
-        this.keys ? this.keyboard.resetKeyboard(this.keys) : false
+        this.keys ? Spell.keyboardSystem.resetKeyboard(this.keys) : false
         this.frameCount++
     }
 
     setGameLoop(singleLevelCallback){
+        if(typeof singleLevelCallback !== 'function'){
+            throw new Error('Spell: game loop must be a function')
+        }
         this.singleLevelCallback = singleLevelCallback
         return this
     }
-
-    renderStop = () => this.stopRendering = true;
-
-    renderGo = () => this.stopRendering = false;
 
     setFrameSpeed(framesPersecond){
         this.framesPersecond = framesPersecond
         this.frameInterval = 1000 / this.framesPersecond
     }
 
-    enableWebSocket = (url, protocols) => {
-        this.websocket = new SpellWebSocket()
-        this.websocket.initialize(url, protocols)
-        return this
+    timmerTick = () => {
+        if(this.paused === false){
+            this.timmer+=0.5
+            this.isNextHalfSecond = true;
+            this.timerModCount++
+            if(this.timerModCount == 2){
+                this.timerModCount = 0;
+                this.isNextSecond = true
+            }
+        }
     }
 
     initializeTimmer(){
         this.timerModCount = 0
-        this.timmerInterval = setInterval(() => {
-            if(this.paused === false)
-                this.timmer+=0.5
-                this.isNextHalfSecond = true;
-                this.timerModCount++
-                if(this.timerModCount == 2){
-                    this.timerModCount = 0;
-                    this.isNextSecond = true
-                }
-        }, 500);
+        this.timmerInterval = setInterval(this.timmerTick, 500);
     }
 
     /**
-     * Returns user tools available to interact with spell on each frame
+     * Update loop dependend values
      */
-    getUserHelperSpace = () => {
-        return {
-            debug: Debugger,
-            math: SpellMath,
-            mouse: SpellMouse,
-            audio: SpellAudio,
-            game: this,
-            canvas: this.canvas, 
-            keyboard: this.keyboard.keyPress, 
-            isFirstFrame: this.isFirstFrame,
-            frameCount: this.frameCount,
-            patterns: this.patternGenerator,
-            websocket: this.websocket,
-            colision: this.colision,
-            isNextSecond: this.isNextSecond,
-            isNextHalfSecond: this.isNextHalfSecond,
-            firebase: this.firebase,
-            render:{
-                stop: this.renderStop,
-                play: this.renderGo,
-                setFrameRate: this.setFrameSpeed
-            }
+    setUserland = () => {
+        Spell.game = this
+        Spell.keyboard = Spell.keyboardSystem.keyPress,
+        Spell.isFirstFrame = this.isFirstFrame
+        Spell.frameCount = this.frameCount
+        Spell.isNextSecond = this.isNextSecond
+        Spell.isNextHalfSecond = this.isNextHalfSecond
+        Spell.render =  {
+            stop: this.renderStop,
+            play: this.renderGo,
+            setFrameRate: this.setFrameSpeed
         }
     }
 
@@ -178,26 +146,25 @@ export default class SpellGame {
         if(this.stopRendering)
             return window.requestAnimationFrame(this.gameLoop) // to next loop
 
-        // create new spell userland 
-        const spellUserInstance = this.getUserHelperSpace()
+        // update spell userland 
+        this.setUserland()
         
         // skip if need
-        if(spellUserInstance.canvas.rendering) return false
-
+        if(Spell.canvas.rendering) return false
         // display: none of the element
-        if(spellUserInstance.isFirstFrame)
-            spellUserInstance.canvas.show()     
-        
+        if(Spell.isFirstFrame) Spell.canvas.show()     
+
         // colect performance
         let start = window.performance.now();
         let end;
+
         if(typeof this.singleLevelCallback === 'function'){    
-            // render 
-            this.singleLevelCallback(spellUserInstance)
-            // colect performance
-            end = window.performance.now();
+            this.singleLevelCallback() // render 
+            end = window.performance.now(); // colect performance
+        }else{
+            throw new Error('Spell: game loop must be a function, please run setGameLoop')
         }
-        
+
         // debug
         const userTime = end - start
         if(DEBUG && DEBUG_PERFORMANCE){

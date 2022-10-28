@@ -6,7 +6,6 @@ module.exports = {
     './src/audio.js',
     './src/sprite-loader.js',
     './src/canvas.js',
-    './src/colission.js',
     './src/game-debugger.js',
     './src/game.js',
     './src/keyboard.js',
@@ -14,6 +13,7 @@ module.exports = {
     './src/memory-cache.js',
     './src/mouse.js',
     './src/sprite.js',
+    './src/spell.js',
   ],
   watch: true,
   optimization: {

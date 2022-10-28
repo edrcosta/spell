@@ -1,10 +1,12 @@
 import SpellMath from "./math"
+import SpellMathCache from "./memory-cache"
 
 export default class SpellCanvas {
     element
     context
     visualChange = false
     font = false
+    zoomLevel = 1
 
     constructor(canvasId, _debugger) {
         let element = document.getElementById(canvasId)
@@ -17,12 +19,38 @@ export default class SpellCanvas {
         this.fixDpi()
     }
 
+    getRandomInt = (max, min) => SpellMath.getRandomInt(max, min)
+
+    clear = () => this.context.clearRect(0, 0, this.element.width, this.element.height)
+    
+    drawImage = (sprite) => this.__drawImageOnCanvas(sprite)
+
+    drawImages = (images)  => images.forEach(this.__drawImageOnCanvas)
+
+    setTextSize = (textSize) => this.textSize = textSize
+    
+    setTextColor = (color) => this.textColor = color
+
+    show = () => this.element.style.display = 'block'
+
+    setZoom = (zoomLevel) => this.zoomLevel = zoomLevel
+
     /**
      * set resize listenner to resize the canvas
      */
     setFullWindow(){
         this.fullySize()
         document.addEventListener('resize', this.fullySize())
+    }
+
+    /**
+     * Set canvas to full window size
+     */
+    fullySize(){
+        const size = this.getWindowDimensions()
+        this.element.style.height = `${size.height}px`
+        this.element.style.width = `${size.width}px`
+        this.fixDpi()
     }
 
     isMobile = function() {
@@ -63,37 +91,25 @@ export default class SpellCanvas {
      * return window current dimensions
      */
     getWindowDimensions(){
-        const height = Math.max(
-            document.body.scrollHeight, document.documentElement.scrollHeight,
-            document.body.offsetHeight, document.documentElement.offsetHeight,
-            document.body.clientHeight, document.documentElement.clientHeight
-        );
-
-        const width = Math.max(
-            document.body.scrollWidth, document.documentElement.scrollWidth,
-            document.body.offsetWidth, document.documentElement.offsetWidth,
-            document.body.clientWidth, document.documentElement.clientWidth
-        );
-
-        return { width, height }
-    }
-
-    /**
-     * Set canvas to full window size
-     */
-    fullySize(){
-        this.element.style.height = window.innerHeight+ 'px';
-        this.element.style.width = window.innerWidth+ 'px';
-        this.fixDpi()
-    }
-
-    /**
-     * Whell... the name its very ok for this one
-     */
-    getRandomInt = (max, min) => SpellMath.getRandomInt(max, min)
-
-    clear() {
-        this.context.clearRect(0, 0, this.element.width, this.element.height)
+        if(screen.width && screen.height && this.isMobile()){
+            return {
+                width: screen.width,
+                height: screen.height
+            }
+        }else{
+            return { 
+                width: Math.max(
+                    document.body.scrollWidth, document.documentElement.scrollWidth,
+                    document.body.offsetWidth, document.documentElement.offsetWidth,
+                    document.body.clientWidth, document.documentElement.clientWidth
+                ), 
+                height:  Math.max(
+                    document.body.scrollHeight, document.documentElement.scrollHeight,
+                    document.body.offsetHeight, document.documentElement.offsetHeight,
+                    document.body.clientHeight, document.documentElement.clientHeight
+                )
+            }
+        }
     }
 
     /**
@@ -108,12 +124,6 @@ export default class SpellCanvas {
 
     /**
      * Draw single pixel on screen
-     * @param {Number} x 
-     * @param {Number} y 
-     * @param {string} color 
-     * @param {number} pixelW 
-     * @param {number} pixelH 
-     * @returns 
      */
     drawPixel(x, y, color, pixelW = 10, pixelH = 10) {
         if(typeof pixelH === 'undefined'){
@@ -144,8 +154,6 @@ export default class SpellCanvas {
 
     /**
      * Draw single pixel bitmap
-     * @param {*} spriteClass 
-     * @returns 
      */
     drawPixelSprite(spriteClass) {
         let x = spriteClass.position.x
@@ -167,21 +175,11 @@ export default class SpellCanvas {
         })
         return this
     }
-    
-    drawImage({ sprite, width, height, flipped, angle }) {
-        this.__drawImageOnCanvas({ sprite, width, height, flipped, angle })
-        return this
-    }
 
-    drawImages(images) {
-        images.forEach(({ sprite, width, height, flipped, angle }) => {
-            this.__drawImageOnCanvas({ sprite, width, height, flipped, angle })
-        })
-    }
-
-    __drawImageOnCanvas({ sprite, width, height, flipped, angle }){
+    __drawImageOnCanvas(sprite){
         let { x, y } = sprite.position
-        
+        let { width, height, angle, element } = sprite
+
         if (typeof angle !== 'undefined'){
             const xx = width / 2
             const yy = height / 2
@@ -203,10 +201,6 @@ export default class SpellCanvas {
         return this
     }
 
-    setTextSize = (textSize) => this.textSize = textSize
-    
-    setTextColor = (color) => this.textColor = color
-
     drawText( text, color, size, x, y , font ) {
         if(typeof text !== 'string'){
             font = text.font
@@ -222,6 +216,4 @@ export default class SpellCanvas {
         this.context.font = `${size}px ${font ? font : 'Arial'}`;
         this.context.fillText(text, x, y);
     }
-
-    show = () => this.element.style.display = 'block'
 }

@@ -1,3 +1,5 @@
+import Spell from "./spell";
+
 export default class SpellSprite {
     bitmap;
     colors;
@@ -13,13 +15,10 @@ export default class SpellSprite {
     angle = 0
 
     constructor(imageFile, size){
-        if(typeof imageFile === 'string'){
-            this.setImageFile(imageFile)
-        }
-
+        this.position = { x: 0, y: 0 }
+        this.setImageFile(imageFile)
         if(size && size.width && size.height){
-            this.width = size.width ? size.width : 0
-            this.height = size.height ? size.height : 0
+            this.setSize(size)
         }
     }
 
@@ -28,7 +27,6 @@ export default class SpellSprite {
             this.width = size.width
             this.height = size.height
         }
-
         this.isImage = true
         this.element = new Image()
         this.element.src = src
@@ -57,31 +55,28 @@ export default class SpellSprite {
     }
 
     setPosition({x, y}){
-        this.position.x = x
-        this.position.y = y
+        this.position.x = x === 'center' ?  this.getCenteredX() : this.position.x = x - (this.width / 2)
+        this.position.y = y === 'center' ? this.getCenteredY() : y - (this.height / 2) 
     }
+
+    getCenteredX = () => Spell.canvas.horizontal(50) - (this.width / 2)
+
+    getCenteredY = () => Spell.canvas.vertical(50) - (this.height / 2)
 
     setX = (x) => this.position.x = x
+
     setY = (y) => this.position.y = y
+
     incrementX = (x) => this.position.x += x
+
     incrementY = (y) => this.position.y += y
-    change = (sprite) => this.bitmap = sprite
+
     setAngle = (angle) => this.angle = angle
 
-    clone(){
-        let spriteClone = new SpellSprite(this.element.src, { width: this.width, height: this.height });
-
-        if (this.isImage){
-            spriteClone.setImageFile(this.element.src)
-        }else{
-            spriteClone.setBitmap({
-                bitmap: this.bitmap,
-                colors: this.colors,
-                pixelSize: this.pixelSize            
-            })
-        }
-    
-        spriteClone.setPosition(this.position)
-        return spriteClone
+    setSize = ({width, height}) => {
+        this.width = width * Spell.canvas.zoomLevel
+        this.height = height * Spell.canvas.zoomLevel
     }
+
+    clone = () => Object.assign(Object.create(Object.getPrototypeOf(this)), this)
 }

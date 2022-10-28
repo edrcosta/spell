@@ -1,10 +1,10 @@
 export default class SpellKeyboard {
-    keyPress = {};
+    static keyPress = {};
     
     /**
      * set keyboard back to false 
      */
-    resetKeyboard(keys){
+    static resetKeyboard(keys){
         for (let i = 0; i < keys.length; i++) 
             this.keyPress[keys[i]] = false;
     }
@@ -12,7 +12,7 @@ export default class SpellKeyboard {
     /**
      * Map keyboard into game key map
      */
-    startListemKeyboard = (keys) => {
+    static startListemKeyboard = (keys) => {
         if (!this.keyPress)
             this.resetKeyboard(keys)
         if (typeof window.keypress.Listener === undefined)

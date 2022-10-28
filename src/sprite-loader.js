@@ -1,15 +1,11 @@
 import SpellSprite from './sprite'
-import { DEBUG_PERFORMANCE, DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
+import { DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
+import Spell from './spell'
 
 export default class SpellLoader {
     loading = []
-    spell
     loaded = false
     afterLoadCallback
-
-    constructor(spell){
-        this.spell = spell
-    }
 
     preload(imageList){
         // start download images as spell sprite instances
@@ -27,16 +23,15 @@ export default class SpellLoader {
                 }
             }, 100);
         })
-
         return this
     }
 
     /** Preload a single image by id */
     preloadImage = (id) => {
-        const path = this.imageList[id]
-
-        this.imageList[id] = new SpellSprite()
-        this.loading.push(this.imageList[id].setImageFile(path)) 
+        const url = this.imageList[id].url
+        const size = this.imageList[id].size
+        this.imageList[id] = new SpellSprite(url, size)
+        this.loading.push(this.imageList[id]) 
 
         if(DEBUG && DEBUG_SPRITE_LOADING){
             console.log('downloading:', this.imageList[id])

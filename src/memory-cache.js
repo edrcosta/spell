@@ -8,6 +8,6 @@ export default class SpellMathCache
     }
 
     static get(id){
-        return SpellMathCache.memory[id]
+        return typeof SpellMathCache.memory[id] !== 'undefined' ? SpellMathCache.memory[id] : false 
     }
 }

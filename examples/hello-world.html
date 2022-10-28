@@ -1,38 +1,13 @@
 <html>
     <head>
         <title>test</title>
+        <link rel="stylesheet" href="main.css">
     </head>
     <body>
-        <canvas id="hello-world"></canvas>
-        <p style="color: #fff;">
-            
-        With this code you have a very basic spell instance 
-            <pre style="color: #fff;">
-import SpellGame from "../src/game";
 
-const FPS = 30;
-const canvasId = 'hello-world';
-
-const HELLO_WORLD = ({ isFirstFrame, canvas, game }) => {
-canvas.setBackgroundColor('red')
-}
-
-const JumpGame = new SpellGame(canvasId, FPS)
-
-JumpGame.setGameLoop(HELLO_WORLD)
-            </pre>
-        </p>
-
+            <canvas id="hello-world"></canvas>
+        <script src="keypress-2.1.5.min.js"></script>
 
         <script src="dist/examples.bundle.js"></script>
-        <style>
-            body{
-                background-color: black;
-            }
-
-            canvas{
-                background-color: grey;
-            }
-        </style>
     </body>
 </html>
