@@ -1,5 +1,4 @@
 import SpellMath from "./math"
-import SpellMathCache from "./memory-cache"
 
 export default class SpellCanvas {
     element
