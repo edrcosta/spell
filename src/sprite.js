@@ -78,5 +78,7 @@ export default class SpellSprite {
         this.height = height * Spell.canvas.zoomLevel
     }
 
-    clone = () => Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+    clone = () => {
+        return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+    }
 }
