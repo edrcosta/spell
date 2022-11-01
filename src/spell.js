@@ -5,6 +5,7 @@ import SpellMath from './math'
 import SpellFirebase from './firebase'
 import Debugger from './game-debugger'
 import SpellMouse from './mouse'
+import SpellMap from './map-system'
 
 // This class is used to expose diferent spell tools
 export default class Spell{
@@ -14,7 +15,8 @@ export default class Spell{
     static mouse = SpellMouse
     static audio = SpellAudio
     static keyboardSystem = SpellKeyboard
-    // propertys updated in loop
+    static map = SpellMap
+    // properties updated in loop
     static keyboard
     static game
     static canvas
