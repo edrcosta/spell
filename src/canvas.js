@@ -6,6 +6,7 @@ export default class SpellCanvas {
     visualChange = false
     font = false
     zoomLevel = 1
+    renderStack = []
 
     constructor(canvasId, _debugger) {
         let element = document.getElementById(canvasId)
@@ -22,9 +23,9 @@ export default class SpellCanvas {
 
     clear = () => this.context.clearRect(0, 0, this.element.width, this.element.height)
     
-    drawImage = (sprite) => this.__drawImageOnCanvas(sprite)
+    drawImage = (sprite) => this.__appendToRenderStack(sprite)
 
-    drawImages = (images)  => images.forEach(this.__drawImageOnCanvas)
+    drawImages = (images)  => images.forEach((sprite) => { this.__appendToRenderStack(sprite) })
 
     setTextSize = (textSize) => this.textSize = textSize
     
@@ -47,8 +48,8 @@ export default class SpellCanvas {
      */
     fullySize(){
         const size = this.getWindowDimensions()
-        this.element.style.height = `${size.height}px`
-        this.element.style.width = `${size.width}px`
+        this.element.style.height = `${size.height}px !important`
+        this.element.style.width = `${size.width}px !important`
         this.fixDpi()
     }
 
@@ -66,22 +67,23 @@ export default class SpellCanvas {
             throw new Error('SPELL: horizontal percentual must be a number')
         }
 
-        if ( navigator.platform != "iPad" && navigator.platform != "iPhone" && navigator.platform != "iPod" )
+        const platform = typeof navigator.platform !== 'undefined' ? navigator.platform : navigator.userAgentData.platform
+
+        if (  platform != "iPad" &&  platform != "iPhone" &&  platform != "iPod" )
 		    return SpellMath.percentualOf(percentual, window.innerWidth) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().width)
     }
   
     /**
      * return the percentual of the window height
-     * @param {Number} percentual 
-     * @returns 
      */
     vertical = (percentual) => {
         if(typeof percentual !== 'number'){
             throw new Error('SPELL: vertical percentual must be a number')
         }
+        const platform = typeof navigator.platform !== 'undefined' ? navigator.platform : navigator.userAgentData.platform
 
-        if ( navigator.platform != "iPad" && navigator.platform != "iPhone" && navigator.platform != "iPod" )
+        if ( platform != "iPad" && platform != "iPhone" && platform != "iPod" )
 		    return SpellMath.percentualOf(percentual, window.innerHeight) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().height)
     }
@@ -122,30 +124,33 @@ export default class SpellCanvas {
     }
 
     /**
-     * Draw single pixel on screen
+     * add a pixel to the render stack 
      */
     drawPixel(x, y, color, pixelW = 10, pixelH = 10) {
-        if(typeof pixelH === 'undefined'){
-            pixelH = pixelW
-        }
-        this.context.fillStyle = color
-        this.context.fillRect(x, y, pixelW, pixelH)
-        this.context.fillRect(x, y, pixelW, pixelH)
-        return this
-    }
-
-    drawPixelArray(pixels){
-        if(typeof pixels !== 'object'){
-            throw new Error('SPELL:', 'you must send an array of pixels')
-        }
-        pixels.forEach((pixel) => {
-            this.drawPixel(...pixel)
+        x = x * this.zoomLevel
+        y = y * this.zoomLevel
+        
+        pixelW = pixelW * this.zoomLevel
+        pixelH = pixelH * this.zoomLevel
+        
+        this.renderStack.push({
+            type: 'pixel',
+            element: { x, y, color, pixelW, pixelH }
         })
     }
 
     /**
+     * Render a pixel on canvas
+     */
+    __renderPixel({x, y, color, pixelW, pixelH}){
+        if(typeof pixelH === 'undefined') pixelH = pixelW
+        this.context.fillStyle = color
+        this.context.fillRect(x, y, pixelW, pixelH)
+        this.context.fillRect(x, y, pixelW, pixelH)
+    }
+
+    /**
      * Draw array of pixel bimaps
-     * @param {*} spriteClasses 
      */
     drawPixelSprites(spriteClasses){
         spriteClasses.forEach((sprite) => this.drawPixelSprite(sprite))
@@ -175,9 +180,21 @@ export default class SpellCanvas {
         return this
     }
 
-    __drawImageOnCanvas(sprite){
+    __appendToRenderStack(sprite){
+        this.renderStack.push({
+            type: 'sprite',
+            element: sprite
+        })
+    }
+
+    __drawImageOnCanvas = (sprite) => {
         let { x, y } = sprite.position
         let { width, height, angle, element } = sprite
+
+        width = width * this.zoomLevel
+        height = height * this.zoomLevel
+        x = x * this.zoomLevel
+        y = y * this.zoomLevel
 
         if (typeof angle !== 'undefined'){
             const xx = width / 2
@@ -192,6 +209,21 @@ export default class SpellCanvas {
         }else{
             this.context.drawImage(sprite.element, x, y, width, height)
         }
+    }
+
+    __renderStack(){
+        this.renderStack.forEach((element) => {
+            switch (element.type) {
+                case 'sprite':
+                    this.__drawImageOnCanvas(element.element)    
+                    break;
+                case 'pixel':
+                    this.__renderPixel(element.element)
+                    break;
+            }
+        })
+        this.renderStack = []
+        console.log(this.renderStack.length)
     }
 
     setBackgroundColor = (color) => {

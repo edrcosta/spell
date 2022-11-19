@@ -11,9 +11,11 @@ export default class SpellGame {
     frameInterval = 0
     lastGameLoopTimeStamp = false
     timmerInterval = false
+
     // game
     singleLevelCallback = false
     paused = false
+
     // Timmer properties
     timmer = 0
     timmerCallbackList = []
@@ -159,8 +161,12 @@ export default class SpellGame {
         let end;
 
         if(typeof this.singleLevelCallback === 'function'){    
-            this.singleLevelCallback() // render 
-            end = window.performance.now(); // colect performance
+            // call user Methods
+            this.singleLevelCallback()
+            // Render all images at the same time
+            Spell.canvas.__renderStack()
+            // colect performance
+            end = window.performance.now(); 
         }else{
             throw new Error('Spell: game loop must be a function, please run setGameLoop')
         }
@@ -177,7 +183,8 @@ export default class SpellGame {
         // reset state for the next frame
         SpellMouse.clicked = false
         this._updateStatusRegisters()
-        window.requestAnimationFrame(this.gameLoop) // to next loop
+        // to next loop
+        window.requestAnimationFrame(this.gameLoop)
         this.isNextHalfSecond = false;
         this.isNextSecond = false;
     }

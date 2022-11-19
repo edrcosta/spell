@@ -18,7 +18,7 @@ export default class SpellMap {
 
         for (let y = 0; y < rowNumber; y++) {
             SpellMap.map[y] = []
-            for (let x = 0; x < rowNumber; x++) {
+            for (let x = 0; x < colNumber; x++) {
                 SpellMap.map[y][x] = 0
             }
         }
@@ -44,17 +44,18 @@ export default class SpellMap {
         SpellMap.map.forEach((row, yy) => {
             row.forEach((objectId, xx) => {
                 const object = SpellMap.tileObjects[objectId]
-                
                 const tileX = xx * SpellMap.tileSize
                 const tileY = yy * SpellMap.tileSize
 
                 if(typeof object !== 'undefined' && object !== 0){
+                    // render regular tile image
                     object.setPosition({ 
                         x: (SpellMap.position.x + tileX) - mapPosX + SpellMap.tileSize / 2, 
                         y : (SpellMap.position.y + tileY) - mapPosY + SpellMap.tileSize / 2
                     })
                     Spell.canvas.drawImage(object)
                 }else if(showEmpty){
+                    // render empty block for debugging
                     const x = (SpellMap.position.x + tileX) - mapPosX 
                     const y = (SpellMap.position.y  + tileY) - mapPosY
                     Spell.canvas.drawPixel(x, y, 'red', SpellMap.tileSize, SpellMap.tileSize)

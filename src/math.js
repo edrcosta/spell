@@ -35,9 +35,7 @@ export default class SpellMath {
         const id = `${percent}/100*${ofValue}`
 
         const cached = SpellMathCache.get(id)
-        if(cached){
-            return cached
-        }
+        if(cached) return cached
 
         const op = percent / 100 * ofValue
         

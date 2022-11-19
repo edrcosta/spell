@@ -5,6 +5,7 @@ module.exports = {
     './src/websocket.js',
     './src/audio.js',
     './src/sprite-loader.js',
+    './src/colision.js',
     './src/canvas.js',
     './src/game-debugger.js',
     './src/game.js',

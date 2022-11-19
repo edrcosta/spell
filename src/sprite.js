@@ -54,9 +54,14 @@ export default class SpellSprite {
         this.afterRenderCallback = callback
     }
 
-    setPosition({x, y}){
-        this.position.x = x === 'center' ?  this.getCenteredX() : this.position.x = x - (this.width / 2)
-        this.position.y = y === 'center' ? this.getCenteredY() : y - (this.height / 2) 
+    setPosition({x, y}, exactPosition){
+        if(exactPosition){
+            this.position.x = x
+            this.position.y = y
+        }else{
+            this.position.x = x === 'center' ?  this.getCenteredX() : this.position.x = x - (this.width / 2)
+            this.position.y = y === 'center' ? this.getCenteredY() : y - (this.height / 2) 
+        }
     }
 
     getCenteredX = () => Spell.canvas.horizontal(50) - (this.width / 2)
@@ -74,11 +79,15 @@ export default class SpellSprite {
     setAngle = (angle) => this.angle = angle
 
     setSize = ({width, height}) => {
-        this.width = width * Spell.canvas.zoomLevel
-        this.height = height * Spell.canvas.zoomLevel
+        this.width = width
+        this.height = height
     }
 
     clone = () => {
-        return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
+        const clone = new SpellSprite(this.element.src, { width: this.width, height: this.height})
+        clone.setPosition(this.position)
+        return clone
+        // @todo figure out a way to clone a class instance properly
+        // return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
     }
 }

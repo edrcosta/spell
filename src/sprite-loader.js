@@ -1,6 +1,5 @@
 import SpellSprite from './sprite'
 import { DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
-import Spell from './spell'
 
 export default class SpellLoader {
     loading = []

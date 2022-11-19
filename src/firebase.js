@@ -47,7 +47,7 @@ export default class SpellFirebase {
         const reference = collection(this.database, path);   
         let q;
         if(_limit && orderby){
-             q = query(reference, orderBy(orderby.field, orderby.order), limit(_limit));
+            q = query(reference, orderBy(orderby.field, orderby.order), limit(_limit));
         }else{
             q = reference
         }
