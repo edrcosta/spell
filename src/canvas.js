@@ -3,10 +3,14 @@ import SpellMath from "./math"
 export default class SpellCanvas {
     element
     context
-    visualChange = false
     font = false
     zoomLevel = 1
     renderStack = []
+    dimensions = {
+        width: 0,
+        height: 0,
+        async: 0
+    }
 
     constructor(canvasId, _debugger) {
         let element = document.getElementById(canvasId)
@@ -16,7 +20,7 @@ export default class SpellCanvas {
         this.debugger = _debugger
         this.element = element
         this.context = element.getContext('2d')
-        this.fixDpi()
+        this.setCanvasFullWindow()
     }
 
     getRandomInt = (max, min) => SpellMath.getRandomInt(max, min)
@@ -35,22 +39,10 @@ export default class SpellCanvas {
 
     setZoom = (zoomLevel) => this.zoomLevel = zoomLevel
 
-    /**
-     * set resize listenner to resize the canvas
-     */
-    setFullWindow(){
-        this.fullySize()
-        document.addEventListener('resize', this.fullySize())
-    }
-
-    /**
-     * Set canvas to full window size
-     */
-    fullySize(){
+    setCanvasFullWindow(){
         const size = this.getWindowDimensions()
-        this.element.style.height = `${size.height}px !important`
-        this.element.style.width = `${size.width}px !important`
-        this.fixDpi()
+        this.element.setAttribute('height', size.height)
+        this.element.setAttribute('width', size.width)
     }
 
     isMobile = function() {
@@ -87,41 +79,11 @@ export default class SpellCanvas {
 		    return SpellMath.percentualOf(percentual, window.innerHeight) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().height)
     }
-    
-    /**
-     * return window current dimensions
-     */
-    getWindowDimensions(){
-        if(screen.width && screen.height && this.isMobile()){
-            return {
-                width: screen.width,
-                height: screen.height
-            }
-        }else{
-            return { 
-                width: Math.max(
-                    document.body.scrollWidth, document.documentElement.scrollWidth,
-                    document.body.offsetWidth, document.documentElement.offsetWidth,
-                    document.body.clientWidth, document.documentElement.clientWidth
-                ), 
-                height:  Math.max(
-                    document.body.scrollHeight, document.documentElement.scrollHeight,
-                    document.body.offsetHeight, document.documentElement.offsetHeight,
-                    document.body.clientHeight, document.documentElement.clientHeight
-                )
-            }
-        }
-    }
 
-    /**
-     * Fix blurry canvas line
-     */
-    fixDpi() {
-        const styleHeight = +getComputedStyle(this.element).getPropertyValue("height").slice(0, -2)
-        const styleWidth = +getComputedStyle(this.element).getPropertyValue("width").slice(0, -2)
-        this.element.setAttribute('height', styleHeight * window.devicePixelRatio)
-        this.element.setAttribute('width', styleWidth * window.devicePixelRatio)
-    }
+    getWindowDimensions = () => ({ 
+        width : window.innerWidth, 
+        height:  window.innerHeight
+    })
 
     /**
      * add a pixel to the render stack 
@@ -132,7 +94,7 @@ export default class SpellCanvas {
         
         pixelW = pixelW * this.zoomLevel
         pixelH = pixelH * this.zoomLevel
-        
+
         this.renderStack.push({
             type: 'pixel',
             element: { x, y, color, pixelW, pixelH }
