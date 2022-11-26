@@ -90,6 +90,9 @@ export default class SpellGame {
         this.isFirstFrame = false
         this.keys ? Spell.keyboardSystem.resetKeyboard(this.keys) : false
         this.frameCount++
+        SpellMouse.clicked = false
+        this.isNextHalfSecond = false;
+        this.isNextSecond = false;
     }
 
     setGameLoop(singleLevelCallback){
@@ -148,17 +151,15 @@ export default class SpellGame {
         if(this.stopRendering)
             return window.requestAnimationFrame(this.gameLoop) // to next loop
 
-        // update spell userland 
-        this.setUserland()
-        
-        // skip if need
-        if(Spell.canvas.rendering) return false
-        // display: none of the element
-        if(Spell.isFirstFrame) Spell.canvas.show()     
+        if(Spell.isFirstFrame) 
+            Spell.canvas.show()     
 
         // colect performance
         let start = window.performance.now();
         let end;
+
+        // update spell userland
+        this.setUserland()
 
         if(typeof this.singleLevelCallback === 'function'){    
             // call user Methods
@@ -171,6 +172,9 @@ export default class SpellGame {
             throw new Error('Spell: game loop must be a function, please run setGameLoop')
         }
 
+        // reset state for the next frame
+        this._updateStatusRegisters()
+
         // debug
         const userTime = end - start
         if(DEBUG && DEBUG_PERFORMANCE){
@@ -180,12 +184,7 @@ export default class SpellGame {
             }
         }
         
-        // reset state for the next frame
-        SpellMouse.clicked = false
-        this._updateStatusRegisters()
         // to next loop
         window.requestAnimationFrame(this.gameLoop)
-        this.isNextHalfSecond = false;
-        this.isNextSecond = false;
     }
 }

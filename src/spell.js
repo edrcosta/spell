@@ -3,19 +3,19 @@ import SpellAudio from './audio'
 import SpellKeyboard from './keyboard'
 import SpellMath from './math'
 import SpellFirebase from './firebase'
-import Debugger from './game-debugger'
+import SpellDebugger from './game-debugger'
 import SpellMouse from './mouse'
 import SpellMap from './map-system'
 import SpellColision from './colision'
 
 export default class Spell{
-    static debug = Debugger
     static math = SpellMath
     static mouse = SpellMouse
-    static audio = SpellAudio
     static keyboardSystem = SpellKeyboard
-    static map = SpellMap
     
+    static audio
+    static debug
+    static map
     static colision
     static keyboard
     static game
@@ -32,5 +32,8 @@ export default class Spell{
         Spell.canvas = new SpellCanvas(gameCanvasId, this.debugger)
         Spell.firebase = new SpellFirebase()        
         Spell.colision = new SpellColision()
+        Spell.map = new SpellMap()
+        Spell.debug = new SpellDebugger()
+        Spell.audio = new SpellAudio()
     }
 }

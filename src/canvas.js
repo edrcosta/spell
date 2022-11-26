@@ -9,7 +9,6 @@ export default class SpellCanvas {
     dimensions = {
         width: 0,
         height: 0,
-        async: 0
     }
 
     constructor(canvasId, _debugger) {
@@ -185,7 +184,6 @@ export default class SpellCanvas {
             }
         })
         this.renderStack = []
-        console.log(this.renderStack.length)
     }
 
     setBackgroundColor = (color) => {

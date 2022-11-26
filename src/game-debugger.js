@@ -2,8 +2,8 @@ export let DEBUG = false; // Enable or disable all debug consoles
 export let DEBUG_PERFORMANCE = false;// display frame rendering time in ms
 export let DEBUG_SPRITE_LOADING = false;// display image / sprite preloading status / list
 
-export default class Debugger {
-    static enable(setting){
+export default class SpellDebugger {
+    enable(setting){
         switch (setting) {
             case 'DEBUG':
                 return DEBUG = true;
@@ -14,7 +14,7 @@ export default class Debugger {
         }
     }
 
-    static disable(setting){
+    disable(setting){
         switch (setting) {
             case 'DEBUG':
                 return DEBUG = false;

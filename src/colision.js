@@ -47,6 +47,10 @@ export default class SpellColision {
         }
     }
 
+    isColidingHorizontal = (a, b) => a.position.x < b.position.x + b.size.width && a.position.x + a.size.width > b.position.x
+
+    isColidingVertical = (a, b) => a.position.y < b.position.y + b.size.height && a.size.height + a.position.y > b.position.y
+
     checkBoxColision(aId, bId){
         this.throwIfNotFound(aId)
         this.throwIfNotFound(bId)
@@ -55,12 +59,21 @@ export default class SpellColision {
         const b = this.elements[bId]
 
         if(this.isOnScreen(aId) && this.isOnScreen(bId)){
-            return a.position.x < b.position.x + b.size.width &&
-            a.position.x + a.size.width > b.position.x &&
-            a.position.y < b.position.y + b.size.height &&
-            a.size.height + a.position.y > b.position.y
-        }else{
-            return false
+            return this.isColidingHorizontal(a, b) && this.isColidingVertical(a, b)
         }
+        return false
+    }
+
+    checkBoxColisionHorizontal(aId, bId){
+        this.throwIfNotFound(aId)
+        this.throwIfNotFound(bId)
+        
+        const a = this.elements[aId]
+        const b = this.elements[bId]
+
+        if(this.isOnScreen(aId) && this.isOnScreen(bId)){
+            return this.isColidingHorizontal(a, b)
+        }
+        return false
     }
 }
