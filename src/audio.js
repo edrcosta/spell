@@ -1,36 +1,45 @@
 export default class SpellAudio
 {
-    static files = {}
-    static playing = {}
-    static playngIds = []
+    files = {}
+    playing = {}
+    playngIds = []
 
-    static play(id, duplicate){
+    play(id, duplicate){
         if(duplicate === true){
             // Allow play multiple instances of the same sound like bullet sounds
-            (new Audio(SpellAudio.files[id].url)).play()
-        }else if(SpellAudio.playngIds.indexOf(id) === -1){
-            // Play sounds that will not be repeated multiple times
-            const audio = new Audio(SpellAudio.files[id].url)
-            if(SpellAudio.files[id].loop === true){
-                audio.loop = true
-            }
-            SpellAudio.playing[id] = audio
-            SpellAudio.playing[id].play()
-            if(!SpellAudio.playing[id].paused){
-                SpellAudio.playngIds.push(id)
-            }
+            (new Audio(this.files[id].url)).play()
+        }else if(this.playngIds.indexOf(id) === -1){
+            this.playNonRepeatableAudio(id)
+        }
+    }
+    
+    playNonRepeatableAudio(id){
+        const audio = new Audio(this.files[id].url)
+        if(this.files[id].loop === true){
+            audio.loop = true
+        }
+        this.playing[id] = audio
+        this.playing[id].play()
+        if(!this.playing[id].paused){
+            this.playngIds.push(id)
         }
     }
 
-    static stop(id){
-        if(typeof SpellAudio.playing[id] === 'undefined'){
+    stop(id){
+        this.playing[id].pause()
+        this.playing[id].currentTime = 0
+        delete this.playngIds[this.playngIds.indexOf(id)]
+        this.playngIds.sort()
+    }
+
+    load({id, url, loop}){
+        this.files[id] = { url, loop }
+    }
+
+    isPlaying(id){
+        if(typeof this.playing[id] === 'undefined'){
             return false;
         }
-        SpellAudio.playing[id].pause()
-        SpellAudio.playing[id].currentTime = 0
-    }
-
-    static load({id, url, loop}){
-        SpellAudio.files[id] = { url, loop }
+        return !this.playing[id].paused
     }
 }
