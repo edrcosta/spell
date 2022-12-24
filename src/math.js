@@ -1,7 +1,7 @@
 import SpellMathCache from './memory-cache'
 
 export default class SpellMath {
-    static getRandomInt(min, max) {
+    static getRandomNumber(min, max) {
         if(typeof min !== 'number' || typeof max !== 'number'){
             throw new Error('SPELL: getRandomInt parameters must be numbers')
         }

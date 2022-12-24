@@ -28,17 +28,13 @@ export default class SpellCanvas {
         this.setCanvasFullWindow()
     }
 
-    getRandomInt = (max, min) => SpellMath.getRandomInt(max, min)
+    getRandomNumber = (max, min) => SpellMath.getRandomNumber(max, min)
 
     clear = () => this.context.clearRect(0, 0, this.element.width, this.element.height)
     
     drawImage = (sprite) => this.__appendToRenderStack(sprite)
 
     drawImages = (images)  => images.forEach((sprite) => { this.__appendToRenderStack(sprite) })
-
-    setTextSize = (textSize) => this.textSize = textSize
-    
-    setTextColor = (color) => this.textColor = color
 
     show = () => this.element.style.display = 'block'
 
