@@ -1,66 +1,74 @@
-import SpellMathCache from "./memory-cache"
 import Spell from "./spell"
 
-/**
- * This class its for rendering tile maps based on multidimension a array
- * to simplify level generation
- */
 export default class SpellMap {
     map
     mapObjects = {}
     tileObjects = {}
     tileSize = 0
     position = { x: 0, y: 0}
-    
+    debugColor = 'red'
+
     create(rowNumber, colNumber, tileSize){
         this.tileSize = tileSize
         this.map = []
 
         for (let y = 0; y < rowNumber; y++) {
             this.map[y] = []
-            for (let x = 0; x < colNumber; x++) {
+            for (let x = 0; x < colNumber; x++)
                 this.map[y][x] = 0
-            }
         }
     }
 
-    setPosition = ({x, y}) => this.position = {x, y}
-
-    addTile = (sprite, id) => this.tileObjects[id] = sprite.clone()
+    setPosition = ({ x,  y }) => this.position = {x, y}
 
     mapTile = (id, position) => this.map[position.y][position.x] = id
 
     setMap = (map) => this.map = map
 
+    addTile = (sprite, id, center, margin) => this.tileObjects[id] = {
+        sprite: sprite.clone(),
+        center: center ? center : false,
+        margin: typeof margin !== 'undefined' ? margin : false
+    }
+
+    getTileX = (x) => (x * this.tileSize) + this.position.x
+
+    getTileY = (y) => (y * this.tileSize) + this.position.y
+
+    getTile = ({ x, y}) => this.map[y][x]
+
     render(showEmpty){        
-        let mapPosX = SpellMathCache.get('mapPosX')
-        let mapPosY = SpellMathCache.get('mapPosY')
-
-        if(!mapPosX || !mapPosY){
-            mapPosX = SpellMathCache.add('mapPosX', ((this.tileSize * this.map[0].length ) / 2))
-            mapPosY = SpellMathCache.add('mapPosY', ((this.tileSize * this.map.length ) / 2))
-        }
-        
-        this.map.forEach((row, yy) => {
-            row.forEach((objectId, xx) => {
-                const object = this.tileObjects[objectId]
-                const tileX = xx * this.tileSize
-                const tileY = yy * this.tileSize
-
-                if(typeof object !== 'undefined' && object !== 0){
-                    // render regular tile image
-                    object.setPosition({ 
-                        x: (this.position.x + tileX) - mapPosX + this.tileSize / 2, 
-                        y : (this.position.y + tileY) - mapPosY + this.tileSize / 2
-                    })
-                    Spell.canvas.drawImage(object)
-                }else if(showEmpty){
-                    // render empty block for debugging
-                    const x = (this.position.x + tileX) - mapPosX 
-                    const y = (this.position.y  + tileY) - mapPosY
-                    Spell.canvas.drawPixel(x, y, 'red', this.tileSize, this.tileSize)
-                }
+        this.map.forEach((row, y) => {
+            row.forEach((tile, x) => {
+                this.__renderTile(tile, y, x, showEmpty)
             })
         });
+    }
+
+    __renderBlankTile(x, y){
+        Spell.canvas.drawPixel(this.getTileX(x), this.getTileY(y), this.debugColor, this.tileSize, this.tileSize)
+    }
+
+    __renderSpriteTile(x, y, tile){
+        if(typeof this.tileObjects[tile] !== 'undefined'){
+            const tileObj = this.tileObjects[tile]
+            const clone = tileObj.sprite.clone()
+            const marginX = tileObj.margin ? tileObj.margin[0] : 0
+            const marginY = tileObj.margin ? tileObj.margin[1] : 0
+
+            clone.setPosition({
+                x: this.getTileX(x) + marginX,
+                y: this.getTileY(y) + marginY
+            }, !tileObj.center)
+            Spell.canvas.drawImage(clone)
+        }
+    }
+
+    __renderTile(tile, y, x, showEmpty){
+        if(tile !== 0){
+            this.__renderSpriteTile(x, y, tile)
+        }else if(showEmpty){
+            this.__renderBlankTile(x, y)
+        }
     }
 }
