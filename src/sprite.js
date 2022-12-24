@@ -15,10 +15,12 @@ export default class SpellSprite {
     angle = 0
 
     constructor(imageFile, size){
-        this.position = { x: 0, y: 0 }
-        this.setImageFile(imageFile)
-        if(size && size.width && size.height){
-            this.setSize(size)
+        if(imageFile){
+            this.position = { x: 0, y: 0 }
+            this.setImageFile(imageFile)
+            if(size && size.width && size.height){
+                this.setSize(size)
+            }
         }
     }
 
@@ -87,7 +89,5 @@ export default class SpellSprite {
         const clone = new SpellSprite(this.element.src, { width: this.width, height: this.height})
         clone.setPosition(this.position)
         return clone
-        // @todo figure out a way to clone a class instance properly
-        // return Object.assign(Object.create(Object.getPrototypeOf(this)), this)
     }
 }
