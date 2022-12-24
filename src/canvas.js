@@ -5,7 +5,13 @@ export default class SpellCanvas {
     context
     font = false
     zoomLevel = 1
-    renderStack = []
+
+    renderStack = {
+        images: [],
+        pixels: [],
+        texts: []
+    }
+
     dimensions = {
         width: 0,
         height: 0,
@@ -59,8 +65,7 @@ export default class SpellCanvas {
         }
 
         const platform = typeof navigator.platform !== 'undefined' ? navigator.platform : navigator.userAgentData.platform
-
-        if (  platform != "iPad" &&  platform != "iPhone" &&  platform != "iPod" )
+        if (platform != "iPad" &&  platform != "iPhone" &&  platform != "iPod")
 		    return SpellMath.percentualOf(percentual, window.innerWidth) * window.devicePixelRatio
         return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().width)
     }
@@ -72,6 +77,7 @@ export default class SpellCanvas {
         if(typeof percentual !== 'number'){
             throw new Error('SPELL: vertical percentual must be a number')
         }
+
         const platform = typeof navigator.platform !== 'undefined' ? navigator.platform : navigator.userAgentData.platform
 
         if ( platform != "iPad" && platform != "iPhone" && platform != "iPod" )
@@ -94,10 +100,7 @@ export default class SpellCanvas {
         pixelW = pixelW * this.zoomLevel
         pixelH = pixelH * this.zoomLevel
 
-        this.renderStack.push({
-            type: 'pixel',
-            element: { x, y, color, pixelW, pixelH }
-        })
+        this.renderStack.pixels.push({ x, y, color, pixelW, pixelH })
     }
 
     /**
@@ -142,17 +145,14 @@ export default class SpellCanvas {
     }
 
     __appendToRenderStack(sprite){
-        this.renderStack.push({
-            type: 'sprite',
-            element: sprite
-        })
+        this.renderStack.images.push(sprite)
     }
 
     __drawImageOnCanvas = (sprite) => {
         let { x, y } = sprite.position
         let { width, height, angle, element } = sprite
 
-        width = width * this.zoomLevel
+        width = width * this.zoomLevel 
         height = height * this.zoomLevel
         x = x * this.zoomLevel
         y = y * this.zoomLevel
@@ -173,17 +173,10 @@ export default class SpellCanvas {
     }
 
     __renderStack(){
-        this.renderStack.forEach((element) => {
-            switch (element.type) {
-                case 'sprite':
-                    this.__drawImageOnCanvas(element.element)    
-                    break;
-                case 'pixel':
-                    this.__renderPixel(element.element)
-                    break;
-            }
-        })
-        this.renderStack = []
+        this.renderStack.pixels.forEach((e) => this.__renderPixel(e))
+        this.renderStack.images.forEach((e) => this.__drawImageOnCanvas(e))
+        this.renderStack.texts.forEach((e) => this.__renderText(e))
+        this.renderStack = { images: [], pixels: [], texts: [] }
     }
 
     setBackgroundColor = (color) => {
@@ -192,19 +185,24 @@ export default class SpellCanvas {
         return this
     }
 
-    drawText( text, color, size, x, y , font ) {
-        if(typeof text !== 'string'){
-            font = text.font
-            x = text.position.x
-            y = text.position.y
-            size = text.size
-            color = text.color
-            text = text.text
-        }
-
+    __renderText({ text, color, size, position , font  }){
+        const { x, y } = position
         this.context.textAlign = "center"
         this.context.fillStyle = color
         this.context.font = `${size}px ${font ? font : 'Arial'}`;
         this.context.fillText(text, x, y);
+    }
+
+    drawText({ text, color, size, position , font  }) {
+        this.renderStack.texts.push({ text, color, size, position , font  })
+    }
+
+    drawLine({ from, to, color, width }){
+        this.context.beginPath();
+        this.context.moveTo(from.x, from.y);
+        this.context.lineTo(to.x, to.y);
+        this.context.strokeStyle = color ? color : '#000';
+        this.context.lineWidth = width ? width : 1;
+        this.context.stroke();
     }
 }
