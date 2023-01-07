@@ -6,8 +6,7 @@ export default class SpellAudio
 
     play(id, duplicate, volume){
         if(duplicate === true){
-            // Allow play multiple instances of the same sound like bullet sounds
-            const audio = new Audio(this.files[id].url)
+            const audio = this.files[id].audio
             if(volume){
                 audio.volume = volume
             }
@@ -18,7 +17,7 @@ export default class SpellAudio
     }
     
     playNonRepeatableAudio(id, volume){
-        const audio = new Audio(this.files[id].url)
+        const audio = this.files[id].audio
         if(volume){
             audio.volume = volume
         }
@@ -40,7 +39,8 @@ export default class SpellAudio
     }
 
     load({id, url, loop}){
-        this.files[id] = { url, loop }
+        const audio = new Audio(url)
+        this.files[id] = { url, loop, audio }
     }
 
     isPlaying(id){
