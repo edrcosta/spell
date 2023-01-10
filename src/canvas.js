@@ -150,6 +150,7 @@ export default class SpellCanvas {
 
         width = width * this.zoomLevel 
         height = height * this.zoomLevel
+
         x = x * this.zoomLevel
         y = y * this.zoomLevel
 
@@ -161,10 +162,15 @@ export default class SpellCanvas {
             this.context.save()
             this.context.translate(x + xx, y + yy)
             this.context.rotate(rad)
+            this.drawPixel(sprite.position.x, sprite.position.y, '#F9F5EF', sprite.width, sprite.height)
             this.context.drawImage(element, -xx, -yy, width, height)
+            this.drawPixel(sprite.previousPos.x, sprite.previousPos.y, '#F9F5EF', sprite.width, sprite.height)
             this.context.restore()    
         }else{
+            
+            this.drawPixel(sprite.position.x, sprite.position.y, '#F9F5EF', sprite.width, sprite.height)
             this.context.drawImage(sprite.element, x, y, width, height)
+            this.drawPixel(sprite.previousPos.x, sprite.previousPos.y, '#F9F5EF', sprite.width, sprite.height)
         }
     }
 
@@ -178,7 +184,6 @@ export default class SpellCanvas {
     setBackgroundColor = (color) => {
         this.context.fillStyle = color
         this.context.fillRect(0, 0, this.element.width, this.element.height)
-        return this
     }
 
     __renderText({ text, color, size, position , font  }){
