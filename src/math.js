@@ -3,7 +3,7 @@ import SpellMathCache from './memory-cache'
 export default class SpellMath {
     static getRandomNumber(min, max) {
         if(typeof min !== 'number' || typeof max !== 'number'){
-            throw new Error('SPELL: getRandomInt parameters must be numbers')
+            throw new Error('SPELL: getRandomNumber parameters must be numbers')
         }
 
         if(min > max){
@@ -15,7 +15,7 @@ export default class SpellMath {
     }
 
     static getRandomElement(array){
-        return array[this.getRandomInt(0, (array.length - 1))]
+        return array[this.getRandomNumber(0, (array.length - 1))]
     }
 
     static getRadians(angle){
