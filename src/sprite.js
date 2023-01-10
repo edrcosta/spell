@@ -13,22 +13,13 @@ export default class SpellSprite {
     width = 0
     height = 0
     angle = 0
-
-    constructor(imageFile, size){
-        if(imageFile){
-            this.position = { x: 0, y: 0 }
-            this.setImageFile(imageFile)
-            if(size && size.width && size.height){
-                this.setSize(size)
-            }
-        }
-    }
+    previousPos = { x: 0, y: 0}
 
     setImageFile = (src, size) => new Promise((resolve)=> {
         if(typeof size !== 'undefined'){
-            this.width = size.width
-            this.height = size.height
+            this.setSize(size)
         }
+        
         this.isImage = true
         this.element = new Image()
         this.element.src = src
@@ -57,6 +48,12 @@ export default class SpellSprite {
     }
 
     setPosition({x, y}, exactPosition){
+        this.previousPos = this.position
+
+        
+        // x = Math.ceil(x)
+        // y = Math.ceil(y)
+
         if(exactPosition){
             this.position.x = x
             this.position.y = y
@@ -86,7 +83,8 @@ export default class SpellSprite {
     }
 
     clone = () => {
-        const clone = new SpellSprite(this.element.src, { width: this.width, height: this.height})
+        const clone = new SpellSprite()
+        clone.setImageFile(this.element.src, { width: this.width, height: this.height})
         clone.setPosition(this.position)
         return clone
     }

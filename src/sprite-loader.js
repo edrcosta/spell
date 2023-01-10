@@ -29,7 +29,10 @@ export default class SpellLoader {
     preloadImage = (id) => {
         const url = this.imageList[id].url
         const size = this.imageList[id].size
-        this.imageList[id] = new SpellSprite(url, size)
+        this.imageList[id] = new SpellSprite()
+        if(url){
+            this.imageList[id].setImageFile(url, size)
+        }
         this.loading.push(this.imageList[id]) 
 
         if(DEBUG && DEBUG_SPRITE_LOADING){
