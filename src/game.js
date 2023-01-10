@@ -9,7 +9,6 @@ export default class SpellGame {
     frameCount = 0
     framesPersecond = 40
     frameInterval = 0
-    lastGameLoopTimeStamp = false
     timmerInterval = false
 
     // game
@@ -75,15 +74,11 @@ export default class SpellGame {
     }
 
     _frameRateCheck(){
-        if (!this.lastGameLoopTimeStamp) this.lastGameLoopTimeStamp = new Date()
-
-        const now = new Date()
-
-        if (now.getTime() - this.lastGameLoopTimeStamp.getTime() > this.frameInterval) {
-            this.lastGameLoopTimeStamp = new Date()
-            return true
-        }
-        return false
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(true)
+            }, this.frameInterval);
+        })
     }
 
     _updateStatusRegisters(){
@@ -125,9 +120,6 @@ export default class SpellGame {
         this.timmerInterval = setInterval(this.timmerTick, 500);
     }
 
-    /**
-     * Update loop dependend values
-     */
     setUserland = () => {
         Spell.game = this
         Spell.keyboard = Spell.keyboardSystem.keyPress,
@@ -142,12 +134,12 @@ export default class SpellGame {
         }
     }
 
-    gameLoop = () => {
+    gameLoop = async () => {
+        
+        await this._frameRateCheck()
         // check frame rate skip 
         if(this.timmerInterval === false)
             this.initializeTimmer()
-        if (!this._frameRateCheck())
-            return window.requestAnimationFrame(this.gameLoop) // to next loop
         if(this.stopRendering)
             return window.requestAnimationFrame(this.gameLoop) // to next loop
 
