@@ -60,10 +60,8 @@ export default class SpellCanvas {
             throw new Error('SPELL: horizontal percentual must be a number')
         }
 
-        const platform = typeof navigator.platform !== 'undefined' ? navigator.platform : navigator.userAgentData.platform
-        if (platform != "iPad" &&  platform != "iPhone" &&  platform != "iPod")
-		    return SpellMath.percentualOf(percentual, window.innerWidth) * window.devicePixelRatio
-        return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().width)
+        const size = this.getWindowDimensions()
+        return SpellMath.percentualOf(percentual, size.width)
     }
   
     /**
@@ -73,12 +71,9 @@ export default class SpellCanvas {
         if(typeof percentual !== 'number'){
             throw new Error('SPELL: vertical percentual must be a number')
         }
+        const size = this.getWindowDimensions()
 
-        const platform = typeof navigator.platform !== 'undefined' ? navigator.platform : navigator.userAgentData.platform
-
-        if ( platform != "iPad" && platform != "iPhone" && platform != "iPod" )
-		    return SpellMath.percentualOf(percentual, window.innerHeight) * window.devicePixelRatio
-        return SpellMath.percentualOf(percentual, document.body.getBoundingClientRect().height)
+        return SpellMath.percentualOf(percentual, size.height)
     }
 
     getWindowDimensions = () => ({ 
