@@ -6,6 +6,7 @@ import SpellFirebase from './firebase'
 import SpellDebugger from './game-debugger'
 import SpellMouse from './mouse'
 import SpellMap from './map-system'
+import SpellLoader from './sprite-loader'
 import SpellColision from './colision'
 
 export default class Spell{
@@ -27,6 +28,7 @@ export default class Spell{
     static isNextHalfSecond
     static firebase
     static render
+    static loader
 
     static initialize(gameCanvasId){
         Spell.canvas = new SpellCanvas(gameCanvasId, this.debugger)
@@ -35,5 +37,6 @@ export default class Spell{
         Spell.map = new SpellMap()
         Spell.debug = new SpellDebugger()
         Spell.audio = new SpellAudio()
+        Spell.loader = new SpellLoader()
     }
 }

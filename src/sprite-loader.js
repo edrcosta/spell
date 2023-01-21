@@ -1,10 +1,24 @@
 import SpellSprite from './sprite'
-import { DEBUG, DEBUG_SPRITE_LOADING } from './game-debugger'
+import Spell from './spell'
 
 export default class SpellLoader {
     loading = []
     loaded = false
     afterLoadCallback
+
+    imagesLoaded = false
+
+    constructor(){
+        setTimeout(() => {
+            if(this.imagesLoaded){
+                this.loaded = true           
+                this.afterLoadCallback({ images: this.imageList })
+                if(Spell.debug.get('DEBUG')) {
+                    console.log('SPELL: All assets loaded')
+                }
+            }
+        }, 100);
+    }
 
     preload(imageList){
         // start download images as spell sprite instances
@@ -14,13 +28,7 @@ export default class SpellLoader {
         
         // await preloading images and initialize the game
         Promise.all(this.loading).then(() => {
-            setTimeout(() => {
-                this.loaded = true           
-                this.afterLoadCallback({ images: this.imageList })
-                if(DEBUG) {
-                    console.log('SPELL: All assets loaded')
-                }
-            }, 100);
+            this.imagesLoaded = true
         })
         return this
     }
@@ -35,7 +43,7 @@ export default class SpellLoader {
         }
         this.loading.push(this.imageList[id]) 
 
-        if(DEBUG && DEBUG_SPRITE_LOADING){
+        if(Spell.debug.get('DEBUG') & Spell.debug.get('DEBUG_SPRITE_LOADING')){
             console.log('downloading:', this.imageList[id])
         }
     }
