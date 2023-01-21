@@ -1,7 +1,5 @@
 import Spell from './spell'
-import SpellLoader from './sprite-loader'
 import SpellMouse from './mouse'
-import { DEBUG_PERFORMANCE, DEBUG } from './game-debugger'
 
 export default class SpellGame {
     // Frame rate
@@ -10,7 +8,7 @@ export default class SpellGame {
     framesPersecond = 40
     frameInterval = 0
     timmerInterval = false
-
+    totalDuration = 0
     // game
     singleLevelCallback = false
     paused = false
@@ -21,11 +19,14 @@ export default class SpellGame {
     timmerCallbackIdStack = []
     isNextSecond = 0
     isNextHalfSecond = 0
-
+    
+    frameDuration = 0
+    maxFrameDuration = 0
+    
     constructor(gameCanvasId, framesPersecond) {
         this.framesPersecond = framesPersecond
         this.frameInterval = 1000 / this.framesPersecond
-        this.loader = new SpellLoader(this.setUserland())
+        
         this.startWhenLoaded()
         Spell.initialize(gameCanvasId)
     }
@@ -42,7 +43,7 @@ export default class SpellGame {
         if(typeof imageList !== 'object'){
             throw new Error('SPELL image list must be an object of images [{[key: string] : value}]');
         }
-        this.loader.preload(imageList)
+        Spell.loader.preload(imageList)
         return this
     }
 
@@ -50,13 +51,14 @@ export default class SpellGame {
         if(typeof callback !== 'function'){
             throw new Error('SPELL after loading callback must be a function');
         }
-        this.loader.afterLoad(callback)
+        Spell.loader.afterLoad(callback)
         return this
     }
 
     startWhenLoaded(){
+        this.setUserland()
         let loaderCheck = setInterval(() => {
-            if(this.loader.loaded){
+            if(Spell.loader.loaded){
                 clearInterval(loaderCheck)
                 this.start()
             }
@@ -73,11 +75,20 @@ export default class SpellGame {
         window.requestAnimationFrame(this.gameLoop)
     }
 
-    _frameRateCheck(){
+    __waitToNextFrame(){
         return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve(true)
-            }, this.frameInterval);
+        
+            let startWaiting = (new Date()).getTime()
+            let wait = true
+            while (wait){
+                if((new Date()).getTime() - startWaiting >= (this.frameInterval - this.frameDuration)){
+                    resolve(true)
+                    break
+                }
+            }
+            // //     setTimeout(() => {
+            //     resolve(true)
+        //     }, this.frameInterval);
         })
     }
 
@@ -135,20 +146,19 @@ export default class SpellGame {
     }
 
     gameLoop = async () => {
-        
-        await this._frameRateCheck()
+        // start colecting the performance stats
+        let now = (new Date()).getTime()
+        this.totalDuration = now
+        this.frameDuration = now
+
         // check frame rate skip 
         if(this.timmerInterval === false)
             this.initializeTimmer()
         if(this.stopRendering)
-            return window.requestAnimationFrame(this.gameLoop) // to next loop
+            return window.requestAnimationFrame(this.gameLoop)
 
         if(Spell.isFirstFrame) 
-            Spell.canvas.show()     
-
-        // colect performance
-        let start = window.performance.now();
-        let end;
+            Spell.canvas.show()
 
         // update spell userland
         this.setUserland()
@@ -158,25 +168,33 @@ export default class SpellGame {
             this.singleLevelCallback()
             // Render all images at the same time
             Spell.canvas.__renderStack()
-            // colect performance
-            end = window.performance.now(); 
         }else{
             throw new Error('Spell: game loop must be a function, please run setGameLoop')
         }
 
         // reset state for the next frame
         this._updateStatusRegisters()
-
-        // debug
-        const userTime = end - start
-        if(DEBUG && DEBUG_PERFORMANCE){
-            console.log('SPELL:', userTime, 'ms per frame of a max', this.frameInterval, 'ms at', this.framesPersecond, 'FPS')
-            if(this.frameInterval < userTime){
-                console.log('SPELL: cant reach framerate')
-            }
-        }
         
-        // to next loop
+        // get the render frame duration
+        this.frameDuration = (new Date()).getTime() - this.frameDuration
+        // start collecting the interval await duration
+        let waitDuration = (new Date()).getTime()
+        // wait for the next loop
+        await this.__waitToNextFrame()
+        // get the wait interval duration
+        waitDuration = (new Date()).getTime() - waitDuration
+        // get the full rendering cicle duration
+        this.totalDuration = (new Date()).getTime() - this.totalDuration
+        
+
+        if(Spell.debug.get('DEBUG') && Spell.debug.get('DEBUG_PERFORMANCE')){
+            console.log({
+                frameDuration: this.frameDuration,
+                waitDuration,
+                totalDuration: this.totalDuration
+            })
+        }
+
         window.requestAnimationFrame(this.gameLoop)
     }
 }
