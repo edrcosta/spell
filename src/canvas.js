@@ -5,13 +5,8 @@ export default class SpellCanvas {
     context
     font = false
     zoomLevel = 1
-
-    renderStack = {
-        images: [],
-        pixels: [],
-        texts: []
-    }
-
+    renderStack = []
+    renderStackDisabled = false
     dimensions = {
         width: 0,
         height: 0,
@@ -32,9 +27,9 @@ export default class SpellCanvas {
 
     clear = () => this.context.clearRect(0, 0, this.element.width, this.element.height)
     
-    drawImage = (sprite) => this.__appendToRenderStack(sprite)
+    drawImage = (sprite) => this.__appendToRenderStack('image', sprite)
 
-    drawImages = (images)  => images.forEach((sprite) => { this.__appendToRenderStack(sprite) })
+    drawImages = (images)  => images.forEach((sprite) => { this.__appendToRenderStack('image', sprite) })
 
     show = () => this.element.style.display = 'block'
 
@@ -91,7 +86,7 @@ export default class SpellCanvas {
         pixelW = pixelW * this.zoomLevel
         pixelH = pixelH * this.zoomLevel
 
-        this.renderStack.pixels.push({ x, y, color, pixelW, pixelH })
+        this.__appendToRenderStack('pixel', { x, y, color, pixelW, pixelH })
     }
 
     /**
@@ -135,10 +130,6 @@ export default class SpellCanvas {
         return this
     }
 
-    __appendToRenderStack(sprite){
-        this.renderStack.images.push(sprite)
-    }
-
     __drawImageOnCanvas = (sprite) => {
         let { x, y } = sprite.position
         let { width, height, angle, element } = sprite
@@ -152,7 +143,7 @@ export default class SpellCanvas {
         if (typeof angle !== 'undefined'){
             const xx = width / 2
             const yy = height / 2
-            const rad = SpellMath.getRadians(angle)
+            const rad = angle !== 0 ? SpellMath.getRadians(angle) : 0
 
             this.context.save()
             this.context.translate(x + xx, y + yy)
@@ -169,11 +160,31 @@ export default class SpellCanvas {
         }
     }
 
+    __renderElement = (element) => {
+        switch (element.type) {
+            case 'pixel':
+                this.__renderPixel(element.element)
+                break;
+            case 'text':
+                this.__renderText(element.element)
+                break;
+            case 'image':
+                this.__drawImageOnCanvas(element.element)
+                break;
+        }
+    }
+
+    __appendToRenderStack(type, element){
+        if(this.renderStackDisabled){
+            this.__renderElement({ type, element})
+        }else{
+            this.renderStack.push({ type, element})
+        }
+    }
+
     __renderStack(){
-        this.renderStack.pixels.forEach((e) => this.__renderPixel(e))
-        this.renderStack.images.forEach((e) => this.__drawImageOnCanvas(e))
-        this.renderStack.texts.forEach((e) => this.__renderText(e))
-        this.renderStack = { images: [], pixels: [], texts: [] }
+        this.renderStack.forEach(this.__renderElement)
+        this.renderStack = []
     }
 
     setBackgroundColor = (color) => {
@@ -190,7 +201,7 @@ export default class SpellCanvas {
     }
 
     drawText({ text, color, size, position , font  }) {
-        this.renderStack.texts.push({ text, color, size, position , font  })
+        this.__appendToRenderStack('text', { text, color, size, position , font  })
     }
 
     drawLine({ from, to, color, width }){
