@@ -1,3 +1,5 @@
+import Spell from "./spell";
+
 export default class SpellKeyboard {
     static keyPress = {};
     static listener
@@ -18,6 +20,17 @@ export default class SpellKeyboard {
         keys.forEach((key) => {
             SpellKeyboard.listener.counting_combo(key, () => { this.keyPress[key] = true });
         })
+
+        SpellKeyboard.listener.sequence_combo("shift d d", function() {
+            if(Spell.debug.get('DEBUG_PERFORMANCE') === true){
+                Spell.debug.disable('DEBUG')
+                Spell.debug.disable('DEBUG_PERFORMANCE')
+            }else{
+                Spell.debug.enable('DEBUG')
+                Spell.debug.enable('DEBUG_PERFORMANCE')
+            }
+        }, true);
+        
     }
 
     static stopListem(){

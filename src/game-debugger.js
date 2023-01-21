@@ -1,27 +1,37 @@
 export let DEBUG = false; // Enable or disable all debug consoles
 export let DEBUG_PERFORMANCE = false;// display frame rendering time in ms
-export let DEBUG_SPRITE_LOADING = false;// display image / sprite preloading status / list
 
 export default class SpellDebugger {
+    
+    settings = {
+        DEBUG: false,
+        DEBUG_PERFORMANCE: false,
+        DEBUG_SPRITE_LOADING: false,
+    }
+
+    get(setting){
+        if(typeof this.settings[setting] === 'boolean'){
+            return this.settings[setting]
+        }
+        console.error('SPELL:', setting, 'does not exist')
+        return false
+    }
+
     enable(setting){
-        switch (setting) {
-            case 'DEBUG':
-                return DEBUG = true;
-            case 'DEBUG_PERFORMANCE':
-                return DEBUG_PERFORMANCE = true;
-            case 'DEBUG_SPRITE_LOADING':
-                return DEBUG_SPRITE_LOADING = true;
+        if(typeof this.settings[setting] === 'boolean'){
+            this.settings[setting] = true
         }
     }
 
     disable(setting){
-        switch (setting) {
-            case 'DEBUG':
-                return DEBUG = false;
-            case 'DEBUG_PERFORMANCE':
-                return DEBUG_PERFORMANCE = false;
-            case 'DEBUG_SPRITE_LOADING':
-                return DEBUG_SPRITE_LOADING = false;
+        if(typeof this.settings[setting] === 'boolean'){
+            this.settings[setting] = false
+        }
+    }
+
+    toogle(setting){
+        if(typeof this.settings[setting] === 'boolean'){
+            this.settings[setting] = !this.settings[setting]
         }
     }
 }
