@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = {
   entry: [
     // './src/animation.js',
-    './src/websocket.js',
+    // './src/websocket.js',
     './src/audio.js',
     './src/sprite-loader.js',
     './src/colision.js',

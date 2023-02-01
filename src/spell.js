@@ -23,7 +23,6 @@ export default class Spell{
     static canvas
     static isFirstFrame
     static frameCount
-    static websocket = false
     static isNextSecond
     static isNextHalfSecond
     static firebase
