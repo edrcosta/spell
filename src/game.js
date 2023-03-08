@@ -86,9 +86,6 @@ export default class SpellGame {
                     break
                 }
             }
-            // //     setTimeout(() => {
-            //     resolve(true)
-        //     }, this.frameInterval);
         })
     }
 
