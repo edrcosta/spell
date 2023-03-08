@@ -18,6 +18,14 @@ export default class SpellMath {
         return array[this.getRandomNumber(0, (array.length - 1))]
     }
 
+    static getTriangleByHipAngle(hipot, angle){
+        const ang = angle*(Math.PI/180);
+        return {
+            catop: Math.sin(ang)*hipot,
+            catadj: Math.cos(ang)*hipot,
+        }
+    }
+
     static getRadians(angle){
         const id = `${angle}-radian`
 

@@ -50,10 +50,6 @@ export default class SpellSprite {
     setPosition({x, y}, exactPosition){
         this.previousPos = this.position
 
-        
-        // x = Math.ceil(x)
-        // y = Math.ceil(y)
-
         if(exactPosition){
             this.position.x = x
             this.position.y = y
