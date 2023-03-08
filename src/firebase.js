@@ -1,4 +1,4 @@
-import { collection, doc, setDoc, getDocs, where} from "firebase/firestore"; 
+import { collection, doc, setDoc,getDoc, getDocs, updateDoc } from "firebase/firestore"; 
 import { query, orderBy, limit } from "firebase/firestore";  
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
@@ -29,7 +29,11 @@ export default class SpellFirebase {
         this.database = getFirestore(this.app);
     }
 
-    create = (path, data) => setDoc(doc(collection(this.database, path)), data);
+    create = (path, data) => {
+        const document = doc(collection(this.database, path))
+        setDoc(document, data);
+        return document
+    }
 
     async __execQuery(q){
         const querySnapshot = await getDocs(q);
@@ -43,20 +47,16 @@ export default class SpellFirebase {
         return data
     }
 
-    find = (path, _limit, orderby) =>{
-        const reference = collection(this.database, path);   
-        let q;
-        if(_limit && orderby){
-            q = query(reference, orderBy(orderby.field, orderby.order), limit(_limit));
-        }else{
-            q = reference
-        }
-        return this.__execQuery(q)
+    async getDocument(collectionName, id){
+        const collectionRef = collection(this.database, collectionName)
+        const docRef = doc(collectionRef, id);
+        const docSnap = await getDoc(docRef);
+        return docSnap.exists() ?  docSnap.data(): false
     }
 
-    findWhere = (path, whereClause) => {
-        const reference = collection(this.database, path);   
-        const q = query(reference, where(whereClause[0], whereClause[1], whereClause[2]));
-        return this.__execQuery(q)
+    async updateDocument(collectionName, id, data){
+        const collectionRef = collection(this.database, collectionName)
+
+        return await updateDoc(doc(collectionRef, id), data);
     }
 }
