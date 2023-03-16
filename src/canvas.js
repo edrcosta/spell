@@ -7,6 +7,10 @@ export default class SpellCanvas {
     zoomLevel = 1
     renderStack = []
     renderStackDisabled = false
+    layers = [[]]
+    enableLayers = false
+    currentLayer = 0
+
     dimensions = {
         width: 0,
         height: 0,
@@ -22,6 +26,12 @@ export default class SpellCanvas {
         this.context = element.getContext('2d')
         this.setCanvasFullWindow()
     }
+
+    createLayer = () => {
+        this.layers.push([])
+    }
+
+    setLayer = (layer) => this.currentLayer = layer
 
     getRandomNumber = (max, min) => SpellMath.getRandomNumber(max, min)
 
@@ -177,14 +187,26 @@ export default class SpellCanvas {
     __appendToRenderStack(type, element){
         if(this.renderStackDisabled){
             this.__renderElement({ type, element})
+        }else if(this.enableLayers){
+            this.layers[this.currentLayer].push({ type, element})
         }else{
             this.renderStack.push({ type, element})
         }
     }
 
+    _mapLayersIntoRenderStack(){
+        console.log(this.layers)
+        this.layers.forEach((layer) => {
+            this.renderStack = this.renderStack.concat(layer)
+        })
+    }
+
     __renderStack(){
+        if(this.enableLayers) 
+            this._mapLayersIntoRenderStack()
         this.renderStack.forEach(this.__renderElement)
         this.renderStack = []
+        this.layers = this.layers.map(() => [])
     }
 
     setBackgroundColor = (color) => {

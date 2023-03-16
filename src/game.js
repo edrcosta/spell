@@ -183,7 +183,6 @@ export default class SpellGame {
         // get the full rendering cicle duration
         this.totalDuration = (new Date()).getTime() - this.totalDuration
         
-
         if(Spell.debug.get('DEBUG') && Spell.debug.get('DEBUG_PERFORMANCE')){
             console.log({
                 frameDuration: this.frameDuration,
