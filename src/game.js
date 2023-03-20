@@ -23,6 +23,8 @@ export default class SpellGame {
     frameDuration = 0
     maxFrameDuration = 0
     
+    startAuto = true
+
     constructor(gameCanvasId, framesPersecond) {
         this.framesPersecond = framesPersecond
         this.frameInterval = 1000 / this.framesPersecond
@@ -60,7 +62,8 @@ export default class SpellGame {
         let loaderCheck = setInterval(() => {
             if(Spell.loader.loaded){
                 clearInterval(loaderCheck)
-                this.start()
+                if(this.startAuto) 
+                    this.start()
             }
         }, 50);
     }
@@ -164,7 +167,7 @@ export default class SpellGame {
             // call user Methods
             this.singleLevelCallback()
             // Render all images at the same time
-            Spell.canvas.__renderStack()
+            Spell.canvas.render()
         }else{
             throw new Error('Spell: game loop must be a function, please run setGameLoop')
         }
