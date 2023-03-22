@@ -1,5 +1,8 @@
-import SpellMath from "./math";
+import Spell from "./spell";
 
+/**
+ * OpenGL based rendering
+ */
 export default class SpellOpenGlEngine {
     element
     context
@@ -25,7 +28,7 @@ export default class SpellOpenGlEngine {
     show = () => this.element.style.display = 'block'
     
     setBackgroundColor = (color) => {
-        const rgb = SpellMath.colorToRGB(color)
+        const rgb = Spell.math.colorToRGB(color)
         this.context.clearColor(rgb.r, rgb.g, rgb.b, 1.0);
         this.context.clear(this.context.COLOR_BUFFER_BIT);
     }

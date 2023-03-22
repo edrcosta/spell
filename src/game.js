@@ -9,6 +9,7 @@ export default class SpellGame {
     frameInterval = 0
     timmerInterval = false
     totalDuration = 0
+
     // game
     singleLevelCallback = false
     paused = false
@@ -25,12 +26,10 @@ export default class SpellGame {
     
     startAuto = true
 
-    constructor(gameCanvasId, framesPersecond) {
+    constructor(framesPersecond) {
         this.framesPersecond = framesPersecond
         this.frameInterval = 1000 / this.framesPersecond
-        
         this.startWhenLoaded()
-        Spell.initialize(gameCanvasId)
     }
 
     pause = () => this.paused = true

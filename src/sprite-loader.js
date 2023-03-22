@@ -8,7 +8,7 @@ export default class SpellLoader {
 
     imagesLoaded = false
 
-    constructor(){
+    startLoading(){
         setTimeout(() => {
             if(this.imagesLoaded){
                 this.loaded = true           
@@ -20,6 +20,9 @@ export default class SpellLoader {
         }, 100);
     }
 
+    /**
+     * Preload a list of images
+     */
     preload(imageList){
         // start download images as spell sprite instances
         this.imageList = imageList
@@ -27,20 +30,25 @@ export default class SpellLoader {
         Object.keys(this.imageList).forEach(this.preloadImage)
         
         // await preloading images and initialize the game
-        Promise.all(this.loading).then(() => {
+        Promise.allSettled(this.loading).then(() => {
             this.imagesLoaded = true
         })
         return this
     }
 
-    /** Preload a single image by id */
+    /**
+     * Preload a single image by id
+     */
     preloadImage = (id) => {
         const url = this.imageList[id].url
         const size = this.imageList[id].size
+
         this.imageList[id] = new SpellSprite()
+
         if(url){
             this.imageList[id].setImageFile(url, size)
         }
+
         this.loading.push(this.imageList[id]) 
 
         if(Spell.debug.get('DEBUG') & Spell.debug.get('DEBUG_SPRITE_LOADING')){
@@ -48,7 +56,9 @@ export default class SpellLoader {
         }
     }
 
-    /** SET callback called after all assets been loaded */
+    /**
+     * SET callback called after all assets been loaded
+     */
     afterLoad(callback){
         this.afterLoadCallback = callback
         return this 

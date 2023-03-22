@@ -1,4 +1,4 @@
-import SpellMath from "./math";
+import Spell from "./spell";
 
 export default class SpellWindow {
     element
@@ -30,7 +30,7 @@ export default class SpellWindow {
         }
 
         const size = this.getDimensions()
-        return SpellMath.percentualOf(percentual, size.width)
+        return Spell.math.percentualOf(percentual, size.width)
     }
   
     vertical = (percentual) => {
@@ -39,7 +39,7 @@ export default class SpellWindow {
         }
         const size = this.getDimensions()
 
-        return SpellMath.percentualOf(percentual, size.height)
+        return Spell.math.percentualOf(percentual, size.height)
     }
 
     getDimensions = () => ({ 

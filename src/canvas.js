@@ -1,3 +1,8 @@
+import Spell from "./spell";
+
+/**
+ * Regular javascritp canvas API for non GPU acelerated rendering
+ */
 export default class SpellCanvasRenderEngine {
     element
     context
@@ -44,7 +49,7 @@ export default class SpellCanvasRenderEngine {
         if (typeof angle !== 'undefined'){
             const xx = width / 2
             const yy = height / 2
-            const rad = angle !== 0 ? SpellMath.getRadians(angle) : 0
+            const rad = angle !== 0 ? Spell.math.getRadians(angle) : 0
             this.context.save()
             this.context.translate(x + xx, y + yy)
             this.context.rotate(rad)

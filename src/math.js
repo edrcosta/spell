@@ -1,7 +1,7 @@
 import SpellMathCache from './memory-cache'
 
 export default class SpellMath {
-    static getRandomNumber(min, max) {
+    getRandomNumber(min, max) {
         if(typeof min !== 'number' || typeof max !== 'number'){
             throw new Error('SPELL: getRandomNumber parameters must be numbers')
         }
@@ -14,11 +14,11 @@ export default class SpellMath {
         return Math.floor(Math.random() * (Math.floor(max) - min + 1)) + min
     }
 
-    static getRandomElement(array){
+    getRandomElement(array){
         return array[this.getRandomNumber(0, (array.length - 1))]
     }
 
-    static getTriangleByHipAngle(hipot, angle){
+    getTriangleByHipAngle(hipot, angle){
         const ang = angle*(Math.PI/180);
         return {
             catop: Math.sin(ang)*hipot,
@@ -26,7 +26,7 @@ export default class SpellMath {
         }
     }
 
-    static getRadians(angle){
+    getRadians(angle){
         const id = `${angle}-radian`
 
         const cached = SpellMathCache.get(id)
@@ -39,7 +39,7 @@ export default class SpellMath {
         return SpellMathCache.add(id, op)
     }
 
-    static percentualOf(percent, ofValue){
+    percentualOf(percent, ofValue){
         const id = `${percent}/100*${ofValue}`
 
         const cached = SpellMathCache.get(id)
@@ -50,7 +50,7 @@ export default class SpellMath {
         return SpellMathCache.add(id, op)
     }
 
-    static  colorToRGB(hex) {
+    colorToRGB(hex) {
         return {
             r: parseInt(hex.slice(1, 3), 16),
             g: parseInt(hex.slice(3, 5), 16),

@@ -1,8 +1,16 @@
-import SpellMath from "./math"
 import SpellCanvasRenderEngine from "./canvas"
-import SpellWindow from "./window"
 import SpellOpenGlEngine from "./opengl"
+import Spell from "./spell"
 
+/**
+ * Rendering class 
+ * 
+ * - Controls render stack 
+ * - Controls layers
+ * - Interface with the render engines (webgl and regular canvas)
+ * - allow user to render stuff
+ * 
+ */
 export default class SpellRendering {    
     renderStack = []
     layers = [[]]
@@ -10,36 +18,52 @@ export default class SpellRendering {
     currentLayer = 0
     engine = 'canvas'
 
-    constructor(canvasId) {        
-        if(this.engine === 'canvas'){
-            // CPU based rendering
-            this.engine = new SpellCanvasRenderEngine(canvasId)
-        }else {
-            // GPU accelerated rendering
-            this.engine = new SpellOpenGlEngine(canvasId)
-        }
-
-        this.window = new SpellWindow(canvasId)
-        this.window.setCanvasFullWindow()
+    constructor(canvasId) {
+        this.switchEngine(canvasId)
+        Spell.window.setCanvasFullWindow()
     }
 
-    // setters
+    /**
+     * Selects the render engine
+     */
+    switchEngine(canvasId){
+        switch (this.engine) {
+            case 'canvas':
+                // CPU based rendering
+                this.engine = new SpellCanvasRenderEngine(canvasId)
+                break;
+            case 'opengl':
+                // GPU accelerated rendering
+                this.engine = new SpellOpenGlEngine(canvasId)
+                break;
+        }
+    }
+
+
+    /**
+     * setters
+     */
 
     createLayer = () => this.layers.push([])
     setLayer = (layer) => this.currentLayer = layer
 
 
-    // Tools / helpers
+    /**
+     * Tools / helpers
+     * @todo remove this methods 
+     */
+    
+    getRandomNumber = (max, min) => Spell.math.getRandomNumber(max, min)
+    setCanvasFullWindow = (...args) => Spell.window.setCanvasFullWindow(...args)
+    isMobile = (...args) => Spell.window.isMobile(...args)
+    horizontal = (...args) => Spell.window.horizontal(...args)
+    vertical = (...args) => Spell.window.vertical(...args)
+    getWindowDimensions = (...args) => Spell.window.getDimensions(...args)
 
-    getRandomNumber = (max, min) => SpellMath.getRandomNumber(max, min)
-    setCanvasFullWindow = (...args) => this.window.setCanvasFullWindow(...args)
-    isMobile = (...args) => this.window.isMobile(...args)
-    horizontal = (...args) => this.window.horizontal(...args)
-    vertical = (...args) => this.window.vertical(...args)
-    getWindowDimensions = (...args) => this.window.getDimensions(...args)
 
-
-    // Render Stacking 
+    /**
+     * Render Stacking 
+     */
 
     drawImage = (sprite) => this.addToRenderStack('image', sprite)
     drawText = (args) => this.addToRenderStack('text', args)
@@ -47,16 +71,16 @@ export default class SpellRendering {
     drawImages = (images)  => images.forEach((sprite) => this.addToRenderStack('image', sprite))
 
 
-    // Rendering Engine 
+    /**
+     * Rendering Engine 
+     */
 
     setBackgroundColor = (...args) => this.engine.setBackgroundColor(...args)
     drawLine = (...args) => this.engine.drawLine(...args)
     clear = () => this.engine.clear()
     show = () => this.engine.show()
     
-
-    // Stack Rendering
- 
+    
     /**
      * Adds an render element to the render stack 
      */

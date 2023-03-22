@@ -9,39 +9,48 @@ import SpellLoader from './sprite-loader'
 import SpellColision from './colision'
 import SpellLevels from './levels'
 import SpellRendering from './rendering'
+import SpellWindow from './window'
+import SpellGame from './game'
 
 /**
  * Spell Engine user interface class
  */
 export default class Spell{
-    static math = SpellMath
-    static mouse = SpellMouse
-    static keyboardSystem = SpellKeyboard
-    
-    static audio
-    static debug
-    static map
-    static colision
-    static keyboard
-    static game
-    static canvas
-    static isFirstFrame
-    static frameCount
-    static isNextSecond
-    static isNextHalfSecond
-    static firebase
-    static render
-    static loader   
-    static levels
+    static isFirstFrame = true
+    static frameCount = 0
+    static isNextSecond = false
+    static isNextHalfSecond = false
+    static keyboard = {}
 
-    static initialize(gameCanvasId){
+    static window
+    static loader = SpellLoader.prototype
+    static mouse = SpellMouse.prototype
+    static keyboardSystem = SpellKeyboard.prototype
+    static math = SpellMath.prototype
+    static audio = SpellAudio.prototype
+    static debug = SpellDebugger.prototype
+    static map = SpellMap.prototype
+    static colision = SpellColision.prototype
+    static game = SpellGame.prototype
+    static canvas = SpellRendering.prototype
+    static firebase = SpellFirebase.prototype
+    static levels = SpellLevels.prototype
+    
+    static initialize(gameCanvasId, fps){
+        Spell.window = new SpellWindow(gameCanvasId)
         Spell.canvas = new SpellRendering(gameCanvasId)
+        Spell.math = new SpellMath()
+        Spell.loader = new SpellLoader()
         Spell.firebase = new SpellFirebase()        
         Spell.colision = new SpellColision()
         Spell.map = new SpellMap()
         Spell.debug = new SpellDebugger()
         Spell.audio = new SpellAudio()
-        Spell.loader = new SpellLoader()
         Spell.levels = new SpellLevels()
+        Spell.mouse = new SpellMouse()
+
+        Spell.loader.startLoading()
+
+        return new SpellGame(fps)
     }
 }
