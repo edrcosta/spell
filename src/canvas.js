@@ -1,8 +1,5 @@
 import Spell from "./spell";
 
-/**
- * Regular javascritp canvas API for non GPU acelerated rendering
- */
 export default class SpellCanvasRenderEngine {
     element
     context

@@ -12,9 +12,6 @@ import SpellRendering from './rendering'
 import SpellWindow from './window'
 import SpellGame from './game'
 
-/**
- * Spell Engine user interface class
- */
 export default class Spell{
     static isFirstFrame = true
     static frameCount = 0
@@ -22,7 +19,7 @@ export default class Spell{
     static isNextHalfSecond = false
     static keyboard = {}
 
-    static window
+    static window = SpellWindow.prototype
     static loader = SpellLoader.prototype
     static mouse = SpellMouse.prototype
     static keyboardSystem = SpellKeyboard.prototype

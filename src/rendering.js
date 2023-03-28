@@ -2,15 +2,6 @@ import SpellCanvasRenderEngine from "./canvas"
 import SpellOpenGlEngine from "./opengl"
 import Spell from "./spell"
 
-/**
- * Rendering class 
- * 
- * - Controls render stack 
- * - Controls layers
- * - Interface with the render engines (webgl and regular canvas)
- * - allow user to render stuff
- * 
- */
 export default class SpellRendering {    
     renderStack = []
     layers = [[]]

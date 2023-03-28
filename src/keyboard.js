@@ -1,27 +1,34 @@
 import Spell from "./spell";
 
 export default class SpellKeyboard {
-    static keyPress = {};
-    static listener
+    keyPress = {};
+    listener
+    keys = []
 
-    static resetKeyboard(keys){
-        for (let i = 0; i < keys.length; i++) 
-            this.keyPress[keys[i]] = false;
+    setKeyboard = (keys) => this.keys = keys
+
+    resetKeyboard(){
+        for (let i = 0; i < this.keys.length; i++) 
+            this.keyPress[this.keys[i]] = false;
     }
 
-    static startListemKeyboard = (keys) => {
+    startListemKeyboard = () => {
         if (!this.keyPress)
-            this.resetKeyboard(keys)
+            this.resetKeyboard(this.keys)
         if (typeof window.keypress.Listener === undefined)
             throw 'You need to import keypress-2.1.5 library';
 
-        SpellKeyboard.listener = new window.keypress.Listener();
+        if(this.keys.length === 0){
+            return false
+        }
 
-        keys.forEach((key) => {
-            SpellKeyboard.listener.counting_combo(key, () => { this.keyPress[key] = true });
+        this.listener = new window.keypress.Listener();
+
+        this.keys.forEach((key) => {
+            this.listener.counting_combo(key, () => { this.keyPress[key] = true });
         })
 
-        SpellKeyboard.listener.sequence_combo("shift d d", function() {
+        this.listener.sequence_combo("shift d d", function() {
             if(Spell.debug.get('DEBUG_PERFORMANCE') === true){
                 Spell.debug.disable('DEBUG')
                 Spell.debug.disable('DEBUG_PERFORMANCE')
@@ -30,10 +37,9 @@ export default class SpellKeyboard {
                 Spell.debug.enable('DEBUG_PERFORMANCE')
             }
         }, true);
-        
     }
 
-    static stopListem(){
-        SpellKeyboard.listener.stop_listening()
+    stopListem(){
+        this.listener.stop_listening()
     }
 }

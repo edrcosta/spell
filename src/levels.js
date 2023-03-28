@@ -1,7 +1,6 @@
 import Spell from "./spell"
 
 export default class SpellLevels{
-
     levels = {}
     current = false
 

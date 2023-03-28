@@ -1,12 +1,8 @@
-// export let DEBUG = true; // Enable or disable all debug consoles
-// export let DEBUG_PERFORMANCE = true;// display frame rendering time in ms
-
 export default class SpellDebugger {
-    
     settings = {
-        DEBUG: false,
-        DEBUG_PERFORMANCE: false,
-        DEBUG_SPRITE_LOADING: false,
+        DEBUG: true,
+        DEBUG_PERFORMANCE: true,
+        DEBUG_SPRITE_LOADING: true,
     }
 
     get(setting){

@@ -1,5 +1,4 @@
 import { collection, doc, setDoc,getDoc, getDocs, updateDoc } from "firebase/firestore"; 
-import { query, orderBy, limit } from "firebase/firestore";  
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
