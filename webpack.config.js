@@ -4,6 +4,7 @@ module.exports = {
   entry: [
     './src/audio.js',
     './src/canvas.js',
+    './src/animation.js',
     './src/colision.js',
     './src/firebase.js',
     './src/game-debugger.js',
