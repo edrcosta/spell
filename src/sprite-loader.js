@@ -20,13 +20,9 @@ export default class SpellLoader {
         }, 100);
     }
 
-    /**
-     * Preload a list of images
-     */
     preload(imageList){
         // start download images as spell sprite instances
         this.imageList = imageList
-
         Object.keys(this.imageList).forEach(this.preloadImage)
         
         // await preloading images and initialize the game
@@ -36,9 +32,6 @@ export default class SpellLoader {
         return this
     }
 
-    /**
-     * Preload a single image by id
-     */
     preloadImage = (id) => {
         const url = this.imageList[id].url
         const size = this.imageList[id].size
@@ -56,9 +49,6 @@ export default class SpellLoader {
         }
     }
 
-    /**
-     * SET callback called after all assets been loaded
-     */
     afterLoad(callback){
         this.afterLoadCallback = callback
         return this 

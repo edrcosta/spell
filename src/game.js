@@ -8,9 +8,8 @@ export default class SpellGame {
     framesPersecond = 40
     frameInterval = 0
     singleLevelCallback = false
-    
-    performance
     startAuto = true
+    performance
 
     constructor(framesPersecond) {
         this.framesPersecond = framesPersecond
@@ -23,7 +22,7 @@ export default class SpellGame {
     gameLoop = async () => {
         this.performance.startFrame()
 
-        if(this.timmerInterval === false)
+        if(!this.timmer.isRunning())
             this.timmer.initializeTimmer()
 
         if(this.stopRendering)

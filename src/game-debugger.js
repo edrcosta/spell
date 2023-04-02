@@ -1,8 +1,8 @@
 export default class SpellDebugger {
     settings = {
-        DEBUG: true,
-        DEBUG_PERFORMANCE: true,
-        DEBUG_SPRITE_LOADING: true,
+        DEBUG: false,
+        DEBUG_PERFORMANCE: false,
+        DEBUG_SPRITE_LOADING: false,
     }
 
     get(setting){
