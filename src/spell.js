@@ -11,6 +11,7 @@ import SpellLevels from './levels'
 import SpellRendering from './rendering'
 import SpellWindow from './window'
 import SpellGame from './game'
+import SpellAnimation from './animation'
 
 export default class Spell{
     static isFirstFrame = true
@@ -32,7 +33,8 @@ export default class Spell{
     static canvas = SpellRendering.prototype
     static firebase = SpellFirebase.prototype
     static levels = SpellLevels.prototype
-    
+    static animation = SpellAnimation.prototype
+
     static initialize(gameCanvasId, fps){
         Spell.window = new SpellWindow(gameCanvasId)
         Spell.canvas = new SpellRendering(gameCanvasId)
@@ -45,7 +47,6 @@ export default class Spell{
         Spell.audio = new SpellAudio()
         Spell.levels = new SpellLevels()
         Spell.mouse = new SpellMouse()
-
         Spell.loader.startLoading()
 
         return new SpellGame(fps)
