@@ -5,8 +5,6 @@ export default class SpellTimmer{
     timmer = 0
     halfSecCounter = 0
 
-    isRunning = () => this.timmerInterval !== false
-
     timmerTick = () => {
         this.timmer+=0.5
         Spell.isNextHalfSecond = true;

@@ -14,9 +14,6 @@ export default class SpellRendering {
         Spell.window.setCanvasFullWindow()
     }
 
-    /**
-     * Selects the render engine
-     */
     switchEngine(canvasId){
         switch (this.engine) {
             case 'canvas':
@@ -34,7 +31,6 @@ export default class SpellRendering {
     /**
      * setters
      */
-
     createLayer = () => this.layers.push([])
     setLayer = (layer) => this.currentLayer = layer
 
@@ -43,7 +39,6 @@ export default class SpellRendering {
      * Tools / helpers
      * @todo remove this methods 
      */
-    
     getRandomNumber = (max, min) => Spell.math.getRandomNumber(max, min)
     setCanvasFullWindow = (...args) => Spell.window.setCanvasFullWindow(...args)
     isMobile = (...args) => Spell.window.isMobile(...args)
@@ -55,7 +50,6 @@ export default class SpellRendering {
     /**
      * Render Stacking 
      */
-
     drawImage = (sprite) => this.addToRenderStack('image', sprite)
     drawText = (args) => this.addToRenderStack('text', args)
     drawPixel = (...args) => this.addToRenderStack('pixel', args)
@@ -65,17 +59,12 @@ export default class SpellRendering {
     /**
      * Rendering Engine 
      */
-
     setBackgroundColor = (...args) => this.engine.setBackgroundColor(...args)
     drawLine = (...args) => this.engine.drawLine(...args)
     clear = () => this.engine.clear()
     show = () => this.engine.show()
     
-    
-    /**
-     * Adds an render element to the render stack 
-     */
-     addToRenderStack(type, element){
+    addToRenderStack(type, element){
         if(this.enableLayers){
             this.layers[this.currentLayer].push({ type, element})
         }else {
@@ -83,9 +72,6 @@ export default class SpellRendering {
         }
     }
 
-    /**
-     * Render a stacked element    
-     */
     renderStackElement = (element) => {
         switch (element.type) {
             case 'pixel':
@@ -100,9 +86,6 @@ export default class SpellRendering {
         }
     }
 
-    /**
-     * Render the entire stack using the selected engine method
-     */
     render(){
         if(this.enableLayers){
             this.layers.forEach((layer) => {

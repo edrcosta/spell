@@ -1,8 +1,16 @@
+import SpellSprite from "./sprite"
+
 let animations = {}
 export default class SpellAnimation {
     create(id, { frames, interval }){
+        frames.forEach(frameItem => {
+            if(!frameItem instanceof SpellSprite){
+                throw new Error('SPELL: Frames must be an array of sprites')
+            }
+        })
+
         animations[id] = { 
-            frames, 
+            frames,
             interval,
             currentFrame: 0,
             intervalCount: 0

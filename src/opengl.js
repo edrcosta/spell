@@ -28,20 +28,25 @@ export default class SpellOpenGlEngine {
     show = () => this.element.style.display = 'block'
     
     setBackgroundColor = (color) => {
+        // @todo fix alpha multiplier
         const rgb = Spell.math.colorToRGB(color)
         this.context.clearColor(rgb.r, rgb.g, rgb.b, 1.0);
         this.context.clear(this.context.COLOR_BUFFER_BIT);
     }
     
     renderText({ text, color, size, position , font  }){
+        // @todo
     }
     
     drawLine({ from, to, color, width }){
+        // @todo
     }
     
     drawImageOnCanvas = (sprite) => {
+        // @todo
     }
 
     renderPixel({x, y, color, pixelW, pixelH}){
+        // @todo
     }
 }

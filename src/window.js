@@ -23,7 +23,6 @@ export default class SpellWindow {
         return check;
     };
 
-
     horizontal = (percentual) =>{ 
         if(typeof percentual !== 'number'){
             throw new Error('SPELL: horizontal percentual must be a number')

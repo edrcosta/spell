@@ -20,7 +20,7 @@ export default class Spell{
     static isNextHalfSecond = false
     static keyboard = {}
 
-    static window = SpellWindow.prototype
+    static window 
     static loader = SpellLoader.prototype
     static mouse = SpellMouse.prototype
     static keyboardSystem = SpellKeyboard.prototype
@@ -36,6 +36,7 @@ export default class Spell{
     static animation = SpellAnimation.prototype
 
     static initialize(gameCanvasId, fps){
+        Spell.keyboardSystem = new SpellKeyboard()
         Spell.window = new SpellWindow(gameCanvasId)
         Spell.canvas = new SpellRendering(gameCanvasId)
         Spell.math = new SpellMath()

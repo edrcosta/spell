@@ -54,11 +54,10 @@ export default class SpellColision {
     checkBoxColision(aId, bId){
         this.throwIfNotFound(aId)
         this.throwIfNotFound(bId)
-        
-        const a = this.elements[aId]
-        const b = this.elements[bId]
 
-        if(this.isOnScreen(aId) && this.isOnScreen(bId)){
+        if(this.isOnScreen(aId) && this.isOnScreen(bId)){           
+            const a = this.elements[aId]
+            const b = this.elements[bId]
             return this.isColidingHorizontal(a, b) && this.isColidingVertical(a, b)
         }
         return false
@@ -68,11 +67,8 @@ export default class SpellColision {
         this.throwIfNotFound(aId)
         this.throwIfNotFound(bId)
         
-        const a = this.elements[aId]
-        const b = this.elements[bId]
-
-        if(this.isOnScreen(aId) && this.isOnScreen(bId)){
-            return this.isColidingHorizontal(a, b)
+        if(this.isOnScreen(aId) && this.isOnScreen(bId)){    
+            return this.isColidingHorizontal(this.elements[aId], this.elements[bId])
         }
         return false
     }

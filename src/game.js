@@ -22,7 +22,7 @@ export default class SpellGame {
     gameLoop = async () => {
         this.performance.startFrame()
 
-        if(!this.timmer.isRunning())
+        if(this.timmer.timmerInterval === false)
             this.timmer.initializeTimmer()
 
         if(this.stopRendering)

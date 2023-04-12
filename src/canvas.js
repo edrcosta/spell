@@ -3,6 +3,7 @@ import Spell from "./spell";
 export default class SpellCanvasRenderEngine {
     element
     context
+    stampEnabled = false
 
     constructor(canvasId) {
         let element = document.getElementById(canvasId)
@@ -50,15 +51,21 @@ export default class SpellCanvasRenderEngine {
             this.context.save()
             this.context.translate(x + xx, y + yy)
             this.context.rotate(rad)
-            this.renderPixel({x: sprite.position.x, y: sprite.position.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
+            
+            if(this.stampEnabled) 
+                this.renderPixel({x: sprite.position.x, y: sprite.position.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
+
             this.context.drawImage(element, -xx, -yy, width, height)
-            this.renderPixel({x: sprite.previousPos.x, y: sprite.previousPos.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
+            
+            if(this.stampEnabled)
+                this.renderPixel({x: sprite.previousPos.x, y: sprite.previousPos.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
             this.context.restore()
         }else{
-            
-            this.renderPixel({x: sprite.position.x, y: sprite.position.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
+            if(this.stampEnabled)
+                this.renderPixel({x: sprite.position.x, y: sprite.position.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
             this.context.drawImage(sprite.element, x, y, width, height)
-            this.renderPixel({x: sprite.previousPos.x, y: sprite.previousPos.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
+            if(this.stampEnabled)
+                this.renderPixel({x: sprite.previousPos.x, y: sprite.previousPos.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
         }
     }
 
