@@ -48,7 +48,6 @@ export default class Spell{
         Spell.audio = new SpellAudio()
         Spell.levels = new SpellLevels()
         Spell.mouse = new SpellMouse()
-        Spell.loader.startLoading()
 
         return new SpellGame(fps)
     }

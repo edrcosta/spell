@@ -12,11 +12,10 @@ export default class SpellGame {
     performance
 
     constructor(framesPersecond) {
-        this.framesPersecond = framesPersecond
+        this.framesPersecond = parseInt(framesPersecond)
         this.frameInterval = 1000 / this.framesPersecond
         this.performance = new SpellPerformance()
         this.timmer = new SpellTimmer()
-        this.startWhenLoaded()
     }
     
     gameLoop = async () => {
@@ -64,17 +63,6 @@ export default class SpellGame {
     
     start() {
         window.requestAnimationFrame(this.gameLoop)
-    }
-
-    startWhenLoaded(){
-        this.initializeFrame()
-        let loaderCheck = setInterval(() => {
-            if(Spell.loader.loaded){
-                clearInterval(loaderCheck)
-                if(this.startAuto) 
-                    this.start()
-            }
-        }, 50);
     }
 
     setGameLoop(singleLevelCallback){

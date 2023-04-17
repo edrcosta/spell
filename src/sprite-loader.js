@@ -2,55 +2,48 @@ import SpellSprite from './sprite'
 import Spell from './spell'
 
 export default class SpellLoader {
-    loading = []
-    loaded = false
+    loadingList = []
     afterLoadCallback
 
-    imagesLoaded = false
+    async preload({ images }){
+        this.images = images
 
-    startLoading(){
-        setTimeout(() => {
-            if(this.imagesLoaded){
-                this.loaded = true           
-                this.afterLoadCallback({ images: this.imageList })
-                if(Spell.debug.get('DEBUG')) {
-                    console.log('SPELL: All assets loaded')
-                }
-            }
-        }, 100);
-    }
+        Object.keys(this.images).forEach(this.preloadImage)
 
-    preload(imageList){
-        // start download images as spell sprite instances
-        this.imageList = imageList
-        Object.keys(this.imageList).forEach(this.preloadImage)
+        await this.downloadAllImages()
         
-        // await preloading images and initialize the game
-        Promise.allSettled(this.loading).then(() => {
-            this.imagesLoaded = true
-        })
         return this
     }
 
-    preloadImage = (id) => {
-        const url = this.imageList[id].url
-        const size = this.imageList[id].size
+    downloadAllImages = () => Promise.allSettled(this.loadingList).then(() => {
+        if(typeof this.afterLoadCallback === 'function'){
+            this.afterLoadCallback({ images: this.images })
 
-        this.imageList[id] = new SpellSprite()
-
-        if(url){
-            this.imageList[id].setImageFile(url, size)
+            if(Spell.debug.get('DEBUG_SPRITE_LOADING') && Spell.debug.get('DEBUG')) {
+                console.log('SPELL: All assets loaded')
+            }
         }
+    })
 
-        this.loading.push(this.imageList[id]) 
+    preloadImage = (id) => {
+        const image = this.images[id]
+        const sprite = new SpellSprite()
+
+        const assetDownload = sprite.setImageFile(image.url, image.size )
+        
+        this.loadingList.push(assetDownload) 
 
         if(Spell.debug.get('DEBUG') & Spell.debug.get('DEBUG_SPRITE_LOADING')){
-            console.log('downloading:', this.imageList[id])
+            console.log('start downloading:', image.url)
         }
+        this.images[id] = sprite
     }
 
     afterLoad(callback){
-        this.afterLoadCallback = callback
-        return this 
+        if(typeof callback === 'function'){
+            this.afterLoadCallback = callback
+        }else{
+            throw new Error('SPELL: Afterloading callback must be a function')
+        }
     }
 }
