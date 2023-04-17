@@ -27,41 +27,24 @@ export default class SpellRendering {
         }
     }
 
-
-    /**
-     * setters
-     */
     createLayer = () => this.layers.push([])
+   
     setLayer = (layer) => this.currentLayer = layer
 
-
-    /**
-     * Tools / helpers
-     * @todo remove this methods 
-     */
-    getRandomNumber = (max, min) => Spell.math.getRandomNumber(max, min)
-    setCanvasFullWindow = (...args) => Spell.window.setCanvasFullWindow(...args)
-    isMobile = (...args) => Spell.window.isMobile(...args)
-    horizontal = (...args) => Spell.window.horizontal(...args)
-    vertical = (...args) => Spell.window.vertical(...args)
-    getWindowDimensions = (...args) => Spell.window.getDimensions(...args)
-
-
-    /**
-     * Render Stacking 
-     */
     drawImage = (sprite) => this.addToRenderStack('image', sprite)
+    
     drawText = (args) => this.addToRenderStack('text', args)
+    
     drawPixel = (...args) => this.addToRenderStack('pixel', args)
+    
     drawImages = (images)  => images.forEach((sprite) => this.addToRenderStack('image', sprite))
 
-
-    /**
-     * Rendering Engine 
-     */
     setBackgroundColor = (...args) => this.engine.setBackgroundColor(...args)
+
     drawLine = (...args) => this.engine.drawLine(...args)
+
     clear = () => this.engine.clear()
+
     show = () => this.engine.show()
     
     addToRenderStack(type, element){

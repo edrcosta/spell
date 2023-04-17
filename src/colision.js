@@ -25,9 +25,9 @@ export default class SpellColision {
         this.throwIfNotFound(id)
         let { x, y } = position
 
-        if(x > (Spell.canvas.horizontal(100) + 200) || x < -200)
+        if(x > (Spell.window.horizontal(100) + 200) || x < -200)
             x = false // Out of screen
-        if(y > (Spell.canvas.vertical(100) + 200) || y < -200)
+        if(y > (Spell.window.vertical(100) + 200) || y < -200)
             y = false // Out of screen
 
         this.elements[id].position = { x, y }
@@ -46,6 +46,10 @@ export default class SpellColision {
             Spell.canvas.drawPixel(element.position.x, element.position.y, 'red', element.size.width, element.size.height)
         }
     }
+
+    /**
+     * AA BB box colision algoritm 
+     */
 
     isColidingHorizontal = (a, b) => a.position.x < b.position.x + b.size.width && a.position.x + a.size.width > b.position.x
 
