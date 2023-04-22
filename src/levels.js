@@ -8,7 +8,7 @@ export default class SpellLevels{
         const l = new level()
         const { initialize, render } = l
         if(typeof render === 'function' && typeof initialize === 'function'){
-            this.levels[id] = { id, render, initialize }
+            this.levels[id] = l
             if(!this.current){
                 initialize()
                 this.current = id

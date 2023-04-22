@@ -16,6 +16,7 @@ export default class SpellSprite {
         
         this.element = new Image()
         this.element.src = src
+        this.src = src
         this.element.addEventListener('load', resolve, false)
     })
 

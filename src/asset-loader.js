@@ -5,7 +5,7 @@ export default class SpellLoader {
     loadingList = []
     afterLoadCallback
 
-    async preload({ images }){
+    async preload({ images, audios }){
         this.images = images
 
         Object.keys(this.images).forEach(this.preloadImage)
