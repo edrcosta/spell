@@ -20,7 +20,7 @@ module.exports = {
     './src/performance.js',
     './src/rendering.js',
     './src/spell.js',
-    './src/sprite-loader.js',
+    './src/asset-loader.js',
     './src/sprite.js',
     './src/timmer.js',
     './src/websocket.js',

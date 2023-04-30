@@ -5,7 +5,6 @@ import Spell from "./spell"
 export default class SpellRendering {    
     renderStack = []
     layers = [[]]
-    enableLayers = false
     currentLayer = 0
     engine = 'canvas'
 
@@ -17,18 +16,14 @@ export default class SpellRendering {
     switchEngine(canvasId){
         switch (this.engine) {
             case 'canvas':
-                // CPU based rendering
                 this.engine = new SpellCanvasRenderEngine(canvasId)
                 break;
             case 'opengl':
-                // GPU accelerated rendering
                 this.engine = new SpellOpenGlEngine(canvasId)
                 break;
         }
     }
 
-    createLayer = () => this.layers.push([])
-   
     setLayer = (layer) => this.currentLayer = layer
 
     drawImage = (sprite) => this.addToRenderStack('image', sprite)
@@ -48,11 +43,10 @@ export default class SpellRendering {
     show = () => this.engine.show()
     
     addToRenderStack(type, element){
-        if(this.enableLayers){
-            this.layers[this.currentLayer].push({ type, element})
-        }else {
-            this.renderStackElement({ type, element})
+        if(!this.layers[this.currentLayer]){
+            this.layers[this.currentLayer] = []
         }
+        this.layers[this.currentLayer].push({ type, element})
     }
 
     renderStackElement = (element) => {
@@ -70,13 +64,10 @@ export default class SpellRendering {
     }
 
     render(){
-        if(this.enableLayers){
-            this.layers.forEach((layer) => {
-                layer.forEach(this.renderStackElement)
-            })
-        }else{
-            this.renderStack.forEach(this.renderStackElement)
-        }
+        console.log(this.layers)
+        this.layers.forEach((layer) => {
+            layer.forEach(this.renderStackElement)
+        })
         this.renderStack = []
         this.layers = this.layers.map(() => [])
     }
