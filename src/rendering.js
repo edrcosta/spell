@@ -6,7 +6,8 @@ export default class SpellRendering {
     renderStack = []
     layers = [[]]
     currentLayer = 0
-    engine = 'canvas'
+    selectedEngine = 'canvas'
+    engine = null
 
     constructor(canvasId) {
         this.switchEngine(canvasId)
@@ -14,7 +15,7 @@ export default class SpellRendering {
     }
 
     switchEngine(canvasId){
-        switch (this.engine) {
+        switch (this.selectedEngine) {
             case 'canvas':
                 this.engine = new SpellCanvasRenderEngine(canvasId)
                 break;
@@ -30,7 +31,7 @@ export default class SpellRendering {
     
     drawText = (args) => this.addToRenderStack('text', args)
     
-    drawPixel = (...args) => this.addToRenderStack('pixel', args)
+    drawPixel = (args) => this.addToRenderStack('pixel', args)
     
     drawImages = (images)  => images.forEach((sprite) => this.addToRenderStack('image', sprite))
 
@@ -42,29 +43,30 @@ export default class SpellRendering {
 
     show = () => this.engine.show()
     
-    addToRenderStack(type, element){
+    printscreen = () => this.engine.element.toDataURL('png')
+    
+    addToRenderStack(type, params){
         if(!this.layers[this.currentLayer]){
             this.layers[this.currentLayer] = []
         }
-        this.layers[this.currentLayer].push({ type, element})
+        this.layers[this.currentLayer].push({ type, params})
     }
 
     renderStackElement = (element) => {
         switch (element.type) {
             case 'pixel':
-                this.engine.renderPixel(element.element)
+                this.engine.renderPixel(element.params)
                 break;
             case 'text':
-                this.engine.renderText(element.element)
+                this.engine.renderText(element.params)
                 break;
             case 'image':
-                this.engine.drawImageOnCanvas(element.element)
+                this.engine.drawImageOnCanvas(element.params)
                 break;
         }
     }
 
     render(){
-        console.log(this.layers)
         this.layers.forEach((layer) => {
             layer.forEach(this.renderStackElement)
         })

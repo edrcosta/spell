@@ -10,6 +10,7 @@ export default class SpellGame {
     singleLevelCallback = false
     startAuto = true
     performance
+    keys = []
 
     constructor(framesPersecond) {
         this.framesPersecond = parseInt(framesPersecond)
@@ -85,7 +86,9 @@ export default class SpellGame {
     }
 
     resetFrame(){
-        this.keys ? Spell.keyboardSystem.resetKeyboard(this.keys) : false
+        if(this.keys){
+            Spell.keyboardSystem.resetKeyboard(this.keys)
+        }
         this.frameCount++
         SpellMouse.clicked = false
         Spell.isFirstFrame = false
