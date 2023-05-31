@@ -1,6 +1,7 @@
 import SpellSprite from "./sprite"
 
 let animations = {}
+
 export default class SpellAnimation {
     create(id, { frames, interval }){
         frames.forEach(frameItem => {

@@ -51,28 +51,18 @@ export default class SpellCanvasRenderEngine {
             this.context.save()
             this.context.translate(x + xx, y + yy)
             this.context.rotate(rad)
-            
-            if(this.stampEnabled) 
-                this.renderPixel({x: sprite.position.x, y: sprite.position.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
-
             this.context.drawImage(element, -xx, -yy, width, height)
-            
-            if(this.stampEnabled)
-                this.renderPixel({x: sprite.previousPos.x, y: sprite.previousPos.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
             this.context.restore()
         }else{
-            if(this.stampEnabled)
-                this.renderPixel({x: sprite.position.x, y: sprite.position.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
             this.context.drawImage(sprite.element, x, y, width, height)
-            if(this.stampEnabled)
-                this.renderPixel({x: sprite.previousPos.x, y: sprite.previousPos.y, color: '#F9F5EF', width: sprite.width, height: sprite.height })
         }
     }
 
-    renderPixel({x, y, color, pixelW, pixelH}){
-        if(typeof pixelH === 'undefined') pixelH = pixelW
+    renderPixel({x, y, color, width, height}){
+        if(typeof height === 'undefined') 
+            height = width
         this.context.fillStyle = color
-        this.context.fillRect(x, y, pixelW, pixelH)
-        this.context.fillRect(x, y, pixelW, pixelH)
+        this.context.fillRect(x, y, width, height)
+        this.context.fillRect(x, y, width, height)
     }
 }
