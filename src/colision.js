@@ -43,7 +43,8 @@ export default class SpellColision {
         this.throwIfNotFound(id)
         if(this.isOnScreen(id)){
             const element = this.elements[id]
-            Spell.canvas.drawPixel(element.position.x, element.position.y, 'red', element.size.width, element.size.height)
+            Spell.canvas.currentLayer = 10
+            Spell.canvas.drawPixel({ ...element.position, ...element.size, color: 'red' })
         }
     }
 
