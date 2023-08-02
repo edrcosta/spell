@@ -1,8 +1,8 @@
 import SpellSprite from "./sprite"
 
-let animations = {}
-
 export default class SpellAnimation {
+    animations = {}
+
     create(id, { frames, interval }){
         frames.forEach(frameItem => {
             if(!frameItem instanceof SpellSprite){
@@ -10,36 +10,42 @@ export default class SpellAnimation {
             }
         })
 
-        animations[id] = { 
+        this.animations[id] = { 
             frames,
             interval,
             currentFrame: 0,
             intervalCount: 0
         }
     }
-    
-    getCurrentFrame(id){
-        if(typeof animations[id] === 'object'){
-            const animationGroup = animations[id]
-            // get current frame 
-            const current = animationGroup.frames[animationGroup.currentFrame]
 
-            // check if need to increment animation frame
-            if(animationGroup.intervalCount === animationGroup.interval){
-                // reset interval to only increment animation after some number of frames rendered
-                animationGroup.intervalCount = 0
-                // increment animation
-                animationGroup.currentFrame++
-                if(animationGroup.currentFrame === animationGroup.frames.length){
-                    animationGroup.currentFrame=0
-                }
-            }else{
-                animationGroup.intervalCount++
-            }
+    isUpdateInterval(id) {
+        const interval = this.animations[id].interval
+        const count = this.animations[id].intervalCount++
 
-            // set animation group data back to the state
-            animations[id] = animationGroup
-            return current
+        if(interval === count){
+            this.animations[id].intervalCount = 0
+            return true
         }
+        return false
+    }
+    
+    incrementAnimationFrame(id){
+        this.animations[id].currentFrame++
+        if(this.animations[id].currentFrame === this.animations[id].frames.length){
+            this.animations[id].currentFrame = 0
+        }
+    }
+
+    getCurrentFrame(id){
+        if(typeof this.animations[id] !== 'object'){
+            throw new Error(`SPELL: Invalid animation ${id}`)
+        }
+
+        if(this.isUpdateInterval(id)){
+            this.incrementAnimationFrame(id)
+        }
+        const current = this.animations[id].frames[this.animations[id].currentFrame]
+
+        return current
     }
 }

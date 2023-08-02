@@ -20,21 +20,6 @@ export default class Spell{
     static isNextHalfSecond = false
     static keyboard = {}
 
-    static window 
-    static loader = SpellLoader.prototype
-    static mouse = SpellMouse.prototype
-    static keyboardSystem = SpellKeyboard.prototype
-    static math = SpellMath.prototype
-    static audio = SpellAudio.prototype
-    static debug = SpellDebugger.prototype
-    static map = SpellMap.prototype
-    static colision = SpellColision.prototype
-    static game = SpellGame.prototype
-    static canvas = SpellRendering.prototype
-    static firebase = SpellFirebase.prototype
-    static levels = SpellLevels.prototype
-    static animation = SpellAnimation.prototype
-
     static initialize(gameCanvasId, fps){
         Spell.keyboardSystem = new SpellKeyboard()
         Spell.window = new SpellWindow(gameCanvasId)
@@ -48,7 +33,8 @@ export default class Spell{
         Spell.audio = new SpellAudio()
         Spell.levels = new SpellLevels()
         Spell.mouse = new SpellMouse()
-
-        return new SpellGame(fps)
+        Spell.animation = new SpellAnimation()
+        Spell.game = new SpellGame(fps)
+        return Spell.game
     }
 }

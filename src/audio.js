@@ -1,5 +1,4 @@
-export default class SpellAudio
-{
+export default class SpellAudio{
     files = {}
     playing = {}
     playngIds = []
