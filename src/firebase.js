@@ -1,10 +1,10 @@
-import { collection, doc, setDoc,getDoc, getDocs, updateDoc } from "firebase/firestore"; 
-import { initializeApp } from "firebase/app";
-import { getFirestore } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc, getDocs, updateDoc, getFirestore } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
 
 export default class SpellFirebase {
-    app
-    database
+    app;
+    database;
+    // this could be unsecure as hell
     firebaseSettings = {
         apiKey: null,
         authDomain: null,
@@ -12,10 +12,10 @@ export default class SpellFirebase {
         storageBucket: null,
         messagingSenderId: null,
         appId: null,
-        measurementId: null,
+        measurementId: null
     };
-    
-    initialize(settings){
+
+    initialize (settings) {
         this.firebaseSettings.apiKey = settings.apiKey;
         this.firebaseSettings.authDomain = settings.authDomain;
         this.firebaseSettings.projectId = settings.projectId;
@@ -29,32 +29,32 @@ export default class SpellFirebase {
     }
 
     create = (path, data) => {
-        const document = doc(collection(this.database, path))
+        const document = doc(collection(this.database, path));
         setDoc(document, data);
-        return document
-    }
+        return document;
+    };
 
-    async __execQuery(q){
+    async __execQuery (q) {
         const querySnapshot = await getDocs(q);
-        let data = []
+        const data = [];
         querySnapshot.forEach((doc) => {
             data.push({
                 id: doc.id,
-            ...(doc.data())
-          })
+                ...(doc.data())
+            });
         });
-        return data
+        return data;
     }
 
-    async getDocument(collectionName, id){
-        const collectionRef = collection(this.database, collectionName)
+    async getDocument (collectionName, id) {
+        const collectionRef = collection(this.database, collectionName);
         const docRef = doc(collectionRef, id);
         const docSnap = await getDoc(docRef);
-        return docSnap.exists() ?  docSnap.data(): false
+        return docSnap.exists() ? docSnap.data() : false;
     }
 
-    async updateDocument(collectionName, id, data){
-        const collectionRef = collection(this.database, collectionName)
+    async updateDocument (collectionName, id, data) {
+        const collectionRef = collection(this.database, collectionName);
 
         return await updateDoc(doc(collectionRef, id), data);
     }

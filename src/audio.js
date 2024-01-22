@@ -1,51 +1,51 @@
-export default class SpellAudio{
-    files = {}
-    playing = {}
-    playngIds = []
+export default class SpellAudio {
+    files = {};
+    playing = {};
+    playngIds = [];
 
-    play(id, duplicate, volume){
-        if(duplicate === true){
-            const audio = this.files[id].audio
-            if(volume){
-                audio.volume = volume
+    play (id, duplicate, volume) {
+        if (duplicate === true) {
+            const audio = this.files[id].audio;
+            if (volume) {
+                audio.volume = volume;
             }
-            audio.play()
-        }else if(this.playngIds.indexOf(id) === -1){
-            this.playNonRepeatableAudio(id, volume)
-        }
-    }
-    
-    playNonRepeatableAudio(id, volume){
-        const audio = this.files[id].audio
-        if(volume){
-            audio.volume = volume
-        }
-        if(this.files[id].loop === true){
-            audio.loop = true
-        }
-        this.playing[id] = audio
-        this.playing[id].play()
-        if(!this.playing[id].paused){
-            this.playngIds.push(id)
+            audio.play();
+        } else if (this.playngIds.indexOf(id) === -1) {
+            this.playNonRepeatableAudio(id, volume);
         }
     }
 
-    stop(id){
-        this.playing[id].pause()
-        this.playing[id].currentTime = 0
-        delete this.playngIds[this.playngIds.indexOf(id)]
-        this.playngIds.sort()
+    playNonRepeatableAudio (id, volume) {
+        const audio = this.files[id].audio;
+        if (volume) {
+            audio.volume = volume;
+        }
+        if (this.files[id].loop === true) {
+            audio.loop = true;
+        }
+        this.playing[id] = audio;
+        this.playing[id].play();
+        if (!this.playing[id].paused) {
+            this.playngIds.push(id);
+        }
     }
 
-    load({id, url, loop}){
-        const audio = new Audio(url)
-        this.files[id] = { url, loop, audio }
+    stop (id) {
+        this.playing[id].pause();
+        this.playing[id].currentTime = 0;
+        delete this.playngIds[this.playngIds.indexOf(id)];
+        this.playngIds.sort();
     }
 
-    isPlaying(id){
-        if(typeof this.playing[id] === 'undefined'){
+    load ({ id, url, loop }) {
+        const audio = new Audio(url);
+        this.files[id] = { url, loop, audio };
+    }
+
+    isPlaying (id) {
+        if (typeof this.playing[id] === 'undefined') {
             return false;
         }
-        return !this.playing[id].paused
+        return !this.playing[id].paused;
     }
 }
