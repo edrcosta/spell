@@ -1,29 +1,21 @@
 import SpellSprite from './sprite';
-import Spell from './spell';
+import Spell from '.';
 
 export default class SpellLoader {
     loadingList = [];
     afterLoadCallback;
+    images = {}; // holds images
 
     async preload ({ images, audios }) {
         this.images = images;
+        Object.keys(this.images).map(this.preloadImage);
 
-        Object.keys(this.images).forEach(this.preloadImage);
+        await Promise.allSettled(this.loadingList);
 
-        await this.downloadAllImages();
-
-        return this;
+        return {
+            images: this.images
+        };
     }
-
-    downloadAllImages = () => Promise.allSettled(this.loadingList).then(() => {
-        if (typeof this.afterLoadCallback === 'function') {
-            this.afterLoadCallback({ images: this.images });
-
-            if (Spell.debug.get('DEBUG_SPRITE_LOADING') && Spell.debug.get('DEBUG')) {
-                console.log('SPELL: All assets loaded');
-            }
-        }
-    });
 
     preloadImage = (id) => {
         const image = this.images[id];
@@ -38,12 +30,4 @@ export default class SpellLoader {
         }
         this.images[id] = sprite;
     };
-
-    afterLoad (callback) {
-        if (typeof callback === 'function') {
-            this.afterLoadCallback = callback;
-        } else {
-            throw new Error('SPELL: Afterloading callback must be a function');
-        }
-    }
 }
