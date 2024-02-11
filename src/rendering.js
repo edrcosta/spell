@@ -1,6 +1,6 @@
 import SpellCanvasRenderEngine from './canvas';
 import SpellOpenGlEngine from './opengl';
-import Spell from './spell';
+import Spell from './index';
 
 export default class SpellRendering {
     renderStack = [];
@@ -15,65 +15,39 @@ export default class SpellRendering {
     }
 
     switchEngine (canvasId) {
-        switch (this.selectedEngine) {
-        case 'canvas':
-            this.engine = new SpellCanvasRenderEngine(canvasId);
-            break;
-        case 'opengl':
-            this.engine = new SpellOpenGlEngine(canvasId);
-            break;
-        }
+        this.engine = this.selectedEngine === 'canvas'
+            ? new SpellCanvasRenderEngine(canvasId)
+            : new SpellOpenGlEngine(canvasId);
     }
 
     setLayer = (layer) => { this.currentLayer = layer; };
-
-    drawBlock = (block) => this.addToRenderStack('block', block);
-
-    drawImage = (sprite) => this.addToRenderStack('image', sprite);
-
-    drawText = (args) => this.addToRenderStack('text', args);
-
-    drawPixel = (args) => this.addToRenderStack('pixel', args);
-
-    drawImages = (images) => images.forEach((sprite) => this.addToRenderStack('image', sprite));
-
     setBackgroundColor = (...args) => this.engine.setBackgroundColor(...args);
-
-    drawLine = (...args) => this.engine.drawLine(...args);
-
     clear = () => this.engine.clear();
-
     show = () => this.engine.show();
-
     printscreen = () => this.engine.element.toDataURL('png');
 
-    addToRenderStack (type, params) {
+    _pushNewElementToRenderStack = (type) => (params) => this._pushToRenderStack(type, params);
+    _pushNewElementToRenderStackArr = (type) => (elements) => elements.forEach((element) => this._pushToRenderStack(type, element));
+
+    _pushToRenderStack (type, params) {
         if (!this.layers[this.currentLayer]) {
             this.layers[this.currentLayer] = [];
         }
         this.layers[this.currentLayer].push({ type, params });
     }
 
-    renderStackElement = (element) => {
-        switch (element.type) {
-        case 'pixel':
-            this.engine.renderPixel(element.params);
-            break;
-        case 'text':
-            this.engine.renderText(element.params);
-            break;
-        case 'image':
-            this.engine.drawImageOnCanvas(element.params);
-            break;
-        case 'block':
-            this.engine.drawBlock(element.params);
-            break;
-        }
-    };
+    drawBlock = this._pushNewElementToRenderStack('drawBlock');
+    drawImage = this._pushNewElementToRenderStack('drawImage');
+    drawText = this._pushNewElementToRenderStack('drawText');
+    drawPixel = this._pushNewElementToRenderStack('drawPixel');
+    drawLine = this._pushNewElementToRenderStack('drawLine');
+    drawImages = this._pushNewElementToRenderStackArr('drawImage');
 
     render () {
         this.layers.forEach((layer) => {
-            layer.forEach(this.renderStackElement);
+            layer.forEach(
+                (element) => this.engine[element.type](element.params)
+            );
         });
         this.renderStack = [];
         this.layers = this.layers.map(() => []);

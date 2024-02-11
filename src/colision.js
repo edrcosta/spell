@@ -1,4 +1,4 @@
-import Spell from './spell';
+import Spell from '.';
 
 export default class SpellColision {
     elements = {};
@@ -37,18 +37,28 @@ export default class SpellColision {
         this.elements[id].size = { width, height };
     }
 
-    debug (id) {
+    debug (id, displayName) {
         this.throwIfNotFound(id);
         if (this.isOnScreen(id)) {
             const element = this.elements[id];
             Spell.canvas.currentLayer = 10;
+
             Spell.canvas.drawPixel({ ...element.position, ...element.size, color: 'red' });
+
+            if (displayName) {
+                const position = {
+                    x: element.position.x - (element.size.width / 2),
+                    y: element.position.y - (element.size.height / 2)
+                };
+                Spell.canvas.drawText({
+                    text: id,
+                    color: 'yellow',
+                    size: 15,
+                    position
+                });
+            }
         }
     }
-
-    /**
-     * AA BB box colision algoritm
-     */
 
     isColidingHorizontal = (a, b) => a.position.x < b.position.x + b.size.width && a.position.x + a.size.width > b.position.x;
 

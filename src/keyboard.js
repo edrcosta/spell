@@ -1,4 +1,4 @@
-import Spell from './spell';
+import Spell from '.';
 
 export default class SpellKeyboard {
     keyPress = {};

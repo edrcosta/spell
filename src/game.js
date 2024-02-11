@@ -1,4 +1,4 @@
-import Spell from './spell';
+import Spell from '.';
 import SpellMouse from './mouse';
 import SpellPerformance from './performance';
 import SpellTimmer from './timmer';
@@ -8,7 +8,6 @@ export default class SpellGame {
     framesPersecond = 40;
     frameInterval = 0;
     singleLevelCallback = false;
-    startAuto = true;
     performance;
     keys = [];
 

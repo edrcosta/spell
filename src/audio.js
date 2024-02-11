@@ -43,9 +43,6 @@ export default class SpellAudio {
     }
 
     isPlaying (id) {
-        if (typeof this.playing[id] === 'undefined') {
-            return false;
-        }
-        return !this.playing[id].paused;
+        return typeof this.playing[id] !== 'undefined' && !this.playing[id].paused;
     }
 }

@@ -1,22 +1,53 @@
-export * from './animation.js';
-export * from './asset-loader.js';
-export * from './audio.js';
-export * from './canvas.js';
-export * from './colision.js';
-export * from './firebase.js';
-export * from './game-debugger.js';
-export * from './game.js';
-export * from './keyboard.js';
-export * from './levels.js';
-export * from './map-system.js';
-export * from './math.js';
-export * from './memory-cache.js';
-export * from './mouse.js';
-export * from './opengl.js';
-export * from './performance.js';
-export * from './rendering.js';
-export * from './spell.js';
-export * from './sprite.js';
-export * from './timmer.js';
-export * from './websocket.js';
-export * from './window.js';
+import SpellAudio from './audio';
+import SpellKeyboard from './keyboard';
+import SpellMath from './math';
+import SpellDebugger from './game-debugger';
+import SpellMouse from './mouse';
+import SpellMap from './map-system';
+import SpellLoader from './asset-loader';
+import SpellColision from './colision';
+import SpellLevels from './levels';
+import SpellRendering from './rendering';
+import SpellWindow from './window';
+import SpellGame from './game';
+import SpellAnimation from './animation';
+
+export default class Spell {
+    static isFirstFrame = true;
+    static frameCount = 0;
+    static isNextSecond = false;
+    static isNextHalfSecond = false;
+    static keyboard = {};
+
+    // this enable autocomplete
+    static keyboardSystem = SpellKeyboard.prototype;
+    static window = SpellWindow.prototype;
+    static canvas = SpellRendering.prototype;
+    static math = SpellMath.prototype;
+    static loader = SpellLoader.prototype;
+    static colision = SpellColision.prototype;
+    static map = SpellMap.prototype;
+    static debug = SpellDebugger.prototype;
+    static audio = SpellAudio.prototype;
+    static levels = SpellLevels.prototype;
+    static mouse = SpellMouse.prototype;
+    static animation = SpellAnimation.prototype;
+    static game = SpellGame.prototype;
+
+    static initialize (gameCanvasId, fps, engine = 'canvas') {
+        Spell.keyboardSystem = new SpellKeyboard();
+        Spell.window = new SpellWindow(gameCanvasId);
+        Spell.canvas = new SpellRendering(gameCanvasId, engine);
+        Spell.math = new SpellMath();
+        Spell.loader = new SpellLoader();
+        Spell.colision = new SpellColision();
+        Spell.map = new SpellMap();
+        Spell.debug = new SpellDebugger();
+        Spell.audio = new SpellAudio();
+        Spell.levels = new SpellLevels();
+        Spell.mouse = new SpellMouse();
+        Spell.animation = new SpellAnimation();
+        Spell.game = new SpellGame(fps);
+        return Spell.game;
+    }
+}
