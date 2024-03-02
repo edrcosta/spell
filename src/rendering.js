@@ -1,11 +1,9 @@
 import SpellCanvasRenderEngine from './canvas';
 import SpellOpenGlEngine from './opengl';
 import Spell from './index';
+import SpellRenderStack from './render-stack';
 
 export default class SpellRendering {
-    renderStack = [];
-    layers = [[]];
-    currentLayer = 0;
     selectedEngine = 'canvas';
     engine = null;
 
@@ -14,42 +12,26 @@ export default class SpellRendering {
         Spell.window.setCanvasFullWindow();
     }
 
+    render () {
+        SpellRenderStack.getAndExecute(({ method, params }) => this.engine[method](params));
+    }
+
     switchEngine (canvasId) {
         this.engine = this.selectedEngine === 'canvas'
             ? new SpellCanvasRenderEngine(canvasId)
             : new SpellOpenGlEngine(canvasId);
     }
 
-    setLayer = (layer) => { this.currentLayer = layer; };
     setBackgroundColor = (...args) => this.engine.setBackgroundColor(...args);
+    printscreen = () => this.engine.element.toDataURL('png');
     clear = () => this.engine.clear();
     show = () => this.engine.show();
-    printscreen = () => this.engine.element.toDataURL('png');
 
-    _pushNewElementToRenderStack = (type) => (params) => this._pushToRenderStack(type, params);
-    _pushNewElementToRenderStackArr = (type) => (elements) => elements.forEach((element) => this._pushToRenderStack(type, element));
-
-    _pushToRenderStack (type, params) {
-        if (!this.layers[this.currentLayer]) {
-            this.layers[this.currentLayer] = [];
-        }
-        this.layers[this.currentLayer].push({ type, params });
-    }
-
-    drawBlock = this._pushNewElementToRenderStack('drawBlock');
-    drawImage = this._pushNewElementToRenderStack('drawImage');
-    drawText = this._pushNewElementToRenderStack('drawText');
-    drawPixel = this._pushNewElementToRenderStack('drawPixel');
-    drawLine = this._pushNewElementToRenderStack('drawLine');
-    drawImages = this._pushNewElementToRenderStackArr('drawImage');
-
-    render () {
-        this.layers.forEach((layer) => {
-            layer.forEach(
-                (element) => this.engine[element.type](element.params)
-            );
-        });
-        this.renderStack = [];
-        this.layers = this.layers.map(() => []);
-    }
+    setLayer = SpellRenderStack.setLayer;
+    drawBlock = SpellRenderStack.push('drawBlock');
+    drawImage = SpellRenderStack.push('drawImage');
+    drawText = SpellRenderStack.push('drawText');
+    drawPixel = SpellRenderStack.push('drawPixel');
+    drawLine = SpellRenderStack.push('drawLine');
+    drawImages = SpellRenderStack.pushArr('drawImage');
 }

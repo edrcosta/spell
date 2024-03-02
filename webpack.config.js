@@ -18,6 +18,7 @@ module.exports = {
         './src/mouse.js',
         './src/opengl.js',
         './src/performance.js',
+        './src/render-stack.js',
         './src/rendering.js',
         './src/sprite.js',
         './src/timmer.js',
