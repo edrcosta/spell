@@ -33,17 +33,12 @@ export default class SpellSprite {
     }
 
     getCenteredX = () => Spell.window.horizontal(50) - (this.width / 2);
-
     getCenteredY = () => Spell.window.vertical(50) - (this.height / 2);
 
     setX = (x) => { this.position.x = x; };
-
     setY = (y) => { this.position.y = y; };
-
     incrementX = (x) => { this.position.x += x; };
-
     incrementY = (y) => { this.position.y += y; };
-
     setAngle = (angle) => { this.angle = angle; };
 
     setSize = ({ width, height }) => {

@@ -4,10 +4,11 @@ import Spell from '.';
 export default class SpellLoader {
     loadingList = [];
     afterLoadCallback;
-    images = {}; // holds images
+    images = {};
 
     async preload ({ images, audios }) {
         this.images = images;
+
         Object.keys(this.images).map(this.preloadImage);
 
         await Promise.allSettled(this.loadingList);
@@ -20,7 +21,6 @@ export default class SpellLoader {
     preloadImage = (id) => {
         const image = this.images[id];
         const sprite = new SpellSprite();
-
         const assetDownload = sprite.setImageFile(image.url, image.size);
 
         this.loadingList.push(assetDownload);

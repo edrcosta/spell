@@ -1,11 +1,10 @@
 export default class SpellRenderStack {
     static stackLayers = [[]];
     static currentLayer = 0;
-    static selectedEngine = 'canvas';
-    static engine = null;
 
     static get () {
         const stackLayers = SpellRenderStack.stackLayers;
+        // destroy after get
         SpellRenderStack.clear();
         return stackLayers;
     }

@@ -13,8 +13,10 @@ export default class SpellRendering {
     }
 
     render () {
-        SpellRenderStack.getAndExecute(({ method, params }) => this.engine[method](params));
+        SpellRenderStack.getAndExecute(this.renderElement);
     }
+
+    renderElement = ({ method, params }) => this.engine[method](params);
 
     switchEngine (canvasId) {
         this.engine = this.selectedEngine === 'canvas'

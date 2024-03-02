@@ -46,15 +46,14 @@ export default class SpellColision {
             Spell.canvas.drawPixel({ ...element.position, ...element.size, color: 'red' });
 
             if (displayName) {
-                const position = {
-                    x: element.position.x - (element.size.width / 2),
-                    y: element.position.y - (element.size.height / 2)
-                };
                 Spell.canvas.drawText({
                     text: id,
                     color: 'yellow',
                     size: 15,
-                    position
+                    position: {
+                        x: element.position.x - (element.size.width / 2),
+                        y: element.position.y - (element.size.height / 2)
+                    }
                 });
             }
         }

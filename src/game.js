@@ -7,7 +7,7 @@ export default class SpellGame {
     frameCount = 0;
     framesPersecond = 40;
     frameInterval = 0;
-    singleLevelCallback = false;
+    userGameCallback = false;
     performance;
     keys = [];
 
@@ -35,15 +35,7 @@ export default class SpellGame {
         if (Spell.isFirstFrame) { Spell.canvas.show(); };
 
         this.initializeFrame();
-
-        // when using levels singleLevelCallBack is overwritten with the correct level method
-        if (typeof this.singleLevelCallback === 'function') {
-            this.singleLevelCallback();
-            Spell.canvas.render();
-        } else {
-            throw new Error('Spell: game loop must be a function, please run setGameLoop or use levels');
-        }
-
+        this.executeUserCode();
         this.resetFrame();
 
         this.performance.endFrame();
@@ -55,6 +47,15 @@ export default class SpellGame {
         this.runLoopAgain();
     };
 
+    executeUserCode () {
+        if (typeof this.userGameCallback === 'function') {
+            this.userGameCallback();
+            Spell.canvas.render();
+        } else {
+            throw new Error('Spell: game loop must be a function, please run setGameLoop or use a level class');
+        }
+    }
+
     waitToNextFrame = () => new Promise((resolve) => {
         const startWaiting = (new Date()).getTime();
         while (true) {
@@ -65,11 +66,11 @@ export default class SpellGame {
         }
     });
 
-    setGameLoop (singleLevelCallback) {
-        if (typeof singleLevelCallback !== 'function') {
+    setGameLoop (userGameCallback) {
+        if (typeof userGameCallback !== 'function') {
             throw new Error('Spell: game loop must be a function');
         }
-        this.singleLevelCallback = singleLevelCallback;
+        this.userGameCallback = userGameCallback;
     }
 
     initializeFrame = () => {

@@ -19,10 +19,9 @@ export default class SpellAnimation {
     }
 
     isUpdateInterval (id) {
-        const interval = this.animations[id].interval;
         const count = this.animations[id].intervalCount++;
 
-        if (interval === count) {
+        if (this.animations[id].interval === count) {
             this.animations[id].intervalCount = 0;
             return true;
         }
@@ -44,8 +43,7 @@ export default class SpellAnimation {
         if (this.isUpdateInterval(id)) {
             this.incrementAnimationFrame(id);
         }
-        const current = this.animations[id].frames[this.animations[id].currentFrame];
 
-        return current;
+        return this.animations[id].frames[this.animations[id].currentFrame];
     }
 }

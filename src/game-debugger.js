@@ -5,29 +5,9 @@ export default class SpellDebugger {
         DEBUG_SPRITE_LOADING: false
     };
 
-    get (setting) {
-        if (typeof this.settings[setting] === 'boolean') {
-            return this.settings[setting];
-        }
-        console.error('SPELL:', setting, 'does not exist');
-        return false;
-    }
-
-    enable (setting) {
-        if (typeof this.settings[setting] === 'boolean') {
-            this.settings[setting] = true;
-        }
-    }
-
-    disable (setting) {
-        if (typeof this.settings[setting] === 'boolean') {
-            this.settings[setting] = false;
-        }
-    }
-
-    toogle (setting) {
-        if (typeof this.settings[setting] === 'boolean') {
-            this.settings[setting] = !this.settings[setting];
-        }
-    }
+    get = (setting) => typeof this.settings[setting] === 'boolean' ? this.settings[setting] : undefined;
+    modify = (setting, value) => { this.settings[setting] = value; };
+    enable = (setting) => this.modify(setting, true);
+    disable = (setting) => this.modify(setting, false);
+    toggle = (setting) => this.modify(setting, !this.settings[setting]);
 }
