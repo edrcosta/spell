@@ -11,6 +11,7 @@ import SpellRendering from './rendering';
 import SpellWindow from './window';
 import SpellGame from './game';
 import SpellAnimation from './animation';
+import SpellCartesian from './cartesian';
 
 export default class Spell {
     static isFirstFrame = true;
@@ -33,12 +34,14 @@ export default class Spell {
     static mouse = SpellMouse.prototype;
     static animation = SpellAnimation.prototype;
     static game = SpellGame.prototype;
+    static cartesian = SpellCartesian.prototype;
 
     static initialize (gameCanvasId, fps, engine = 'canvas') {
         Spell.keyboardSystem = new SpellKeyboard();
+        Spell.math = new SpellMath();
+        Spell.cartesian = new SpellCartesian();
         Spell.window = new SpellWindow(gameCanvasId);
         Spell.canvas = new SpellRendering(gameCanvasId, engine);
-        Spell.math = new SpellMath();
         Spell.loader = new SpellLoader();
         Spell.colision = new SpellColision();
         Spell.map = new SpellMap();
