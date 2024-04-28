@@ -4,6 +4,7 @@ export default class SpellCanvasRenderEngine {
     element;
     context;
     stampEnabled = false;
+    zoomLevel = 1;
 
     constructor (canvasId) {
         const element = document.getElementById(canvasId);

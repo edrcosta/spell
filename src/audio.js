@@ -6,9 +6,9 @@ export default class SpellAudio {
     play (id, duplicate, volume) {
         if (duplicate === true) {
             const audio = this.files[id].audio;
-            if (volume) {
-                audio.volume = volume;
-            }
+
+            if (volume) audio.volume = volume;
+
             audio.play();
         } else if (this.playngIds.indexOf(id) === -1) {
             this.playNonRepeatableAudio(id, volume);
@@ -17,17 +17,13 @@ export default class SpellAudio {
 
     playNonRepeatableAudio (id, volume) {
         const audio = this.files[id].audio;
-        if (volume) {
-            audio.volume = volume;
-        }
-        if (this.files[id].loop === true) {
-            audio.loop = true;
-        }
+
+        if (volume) audio.volume = volume;
+        if (this.files[id].loop === true) audio.loop = true;
+        if (!this.playing[id].paused) this.playngIds.push(id);
+
         this.playing[id] = audio;
         this.playing[id].play();
-        if (!this.playing[id].paused) {
-            this.playngIds.push(id);
-        }
     }
 
     stop (id) {

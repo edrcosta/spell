@@ -5,9 +5,9 @@ export default class SpellDebugger {
         DEBUG_SPRITE_LOADING: false
     };
 
-    get = (setting) => typeof this.settings[setting] === 'boolean' ? this.settings[setting] : undefined;
+    get = setting => typeof this.settings[setting] === 'boolean' ? this.settings[setting] : undefined;
     modify = (setting, value) => { this.settings[setting] = value; };
-    enable = (setting) => this.modify(setting, true);
-    disable = (setting) => this.modify(setting, false);
-    toggle = (setting) => this.modify(setting, !this.settings[setting]);
+    enable = setting => this.modify(setting, true);
+    disable = setting => this.modify(setting, false);
+    toggle = setting => this.modify(setting, !this.settings[setting]);
 }

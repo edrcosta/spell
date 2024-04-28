@@ -16,6 +16,7 @@ export default class SpellGame {
         this.frameInterval = 1000 / this.framesPersecond;
         this.performance = new SpellPerformance();
         this.timmer = new SpellTimmer();
+        Spell.initialized = true;
     }
 
     start = this.runLoopAgain;
@@ -29,9 +30,7 @@ export default class SpellGame {
         this.performance.startFrame();
 
         if (this.timmer.timmerInterval === false) { this.timmer.initializeTimmer(); };
-
         if (this.stopRendering) { return this.runLoopAgain(); };
-
         if (Spell.isFirstFrame) { Spell.canvas.show(); };
 
         this.initializeFrame();
@@ -39,9 +38,7 @@ export default class SpellGame {
         this.resetFrame();
 
         this.performance.endFrame();
-
         await this.waitToNextFrame();
-
         this.performance.getReport();
 
         this.runLoopAgain();

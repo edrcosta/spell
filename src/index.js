@@ -15,12 +15,12 @@ import SpellCartesian from './cartesian';
 
 export default class Spell {
     static isFirstFrame = true;
-    static frameCount = 0;
     static isNextSecond = false;
     static isNextHalfSecond = false;
+    static frameCount = 0;
     static keyboard = {};
+    static initialized = false;
 
-    // this enable autocomplete
     static keyboardSystem = SpellKeyboard.prototype;
     static window = SpellWindow.prototype;
     static canvas = SpellRendering.prototype;
@@ -40,17 +40,18 @@ export default class Spell {
         Spell.keyboardSystem = new SpellKeyboard();
         Spell.math = new SpellMath();
         Spell.cartesian = new SpellCartesian();
-        Spell.window = new SpellWindow(gameCanvasId);
-        Spell.canvas = new SpellRendering(gameCanvasId, engine);
         Spell.loader = new SpellLoader();
         Spell.colision = new SpellColision();
         Spell.map = new SpellMap();
         Spell.debug = new SpellDebugger();
         Spell.audio = new SpellAudio();
-        Spell.levels = new SpellLevels();
         Spell.mouse = new SpellMouse();
         Spell.animation = new SpellAnimation();
+        Spell.window = new SpellWindow(gameCanvasId);
+        Spell.canvas = new SpellRendering(gameCanvasId, engine);
+        Spell.levels = new SpellLevels();
         Spell.game = new SpellGame(fps);
+
         return Spell.game;
     }
 }

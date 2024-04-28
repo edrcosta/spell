@@ -47,6 +47,7 @@ export default class SpellSprite {
     };
 
     clone = () => {
+        // js sucks at copying objects... wtf it passes things as references some times (make sense the interpreter has to descontruct stuff)
         const clone = new SpellSprite();
         clone.setImageFile(this.element.src, { width: this.width, height: this.height });
         clone.setPosition(this.position);

@@ -1,8 +1,5 @@
 import Spell from '.';
 
-/**
- * OpenGL based rendering
- */
 export default class SpellOpenGlEngine {
     element;
     context;
@@ -39,12 +36,9 @@ export default class SpellOpenGlEngine {
         this.context.clear(this.context.COLOR_BUFFER_BIT);
     };
 
-    drawText ({ text, color, size, position, font }) {
+    drawText ({ text, color, size, position, font }) {}
 
-    }
-
-    drawLine ({ from, to, color, width }) {
-    }
+    drawLine ({ from, to, color, width }) {}
 
     drawImage = (sprite) => {};
 
