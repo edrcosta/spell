@@ -21,4 +21,9 @@ export default class SpellTimmer {
             this.timmerInterval = setInterval(this.timmerTick, 500);
         }
     }
+
+    stop () {
+        clearInterval(this.timmerInterval);
+        this.timmerInterval = false;
+    }
 }

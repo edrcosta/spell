@@ -12,6 +12,7 @@ import SpellWindow from './window';
 import SpellGame from './game';
 import SpellAnimation from './animation';
 import SpellCartesian from './cartesian';
+import SpellTimmer from './timmer';
 
 export default class Spell {
     static isFirstFrame = true;
@@ -35,6 +36,7 @@ export default class Spell {
     static animation = SpellAnimation.prototype;
     static game = SpellGame.prototype;
     static cartesian = SpellCartesian.prototype;
+    static timmer = SpellTimmer;
 
     static initialize (gameCanvasId, fps, engine = 'canvas') {
         Spell.keyboardSystem = new SpellKeyboard();
@@ -51,6 +53,7 @@ export default class Spell {
         Spell.canvas = new SpellRendering(gameCanvasId, engine);
         Spell.levels = new SpellLevels();
         Spell.game = new SpellGame(fps);
+        Spell.timmer = SpellTimmer;
 
         return Spell.game;
     }
