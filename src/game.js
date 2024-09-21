@@ -55,8 +55,12 @@ export default class SpellGame {
 
     waitToNextFrame = () => new Promise((resolve) => {
         const startWaiting = (new Date()).getTime();
-        while (true) {
-            if ((new Date()).getTime() - startWaiting >= (this.frameInterval - this.performance.frameDuration)) {
+        let stop = false;
+    
+        while (!stop) {
+            stop = (new Date()).getTime() - startWaiting >= (this.frameInterval - this.performance.frameDuration);
+            
+            if (stop) {
                 resolve(true);
                 break;
             }

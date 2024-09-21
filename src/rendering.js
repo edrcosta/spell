@@ -7,8 +7,17 @@ export default class SpellRendering {
     selectedEngine = 'canvas';
     engine = null;
 
-    constructor (canvasId) {
-        this.switchEngine(canvasId);
+    constructor ({gameCanvasId, engine = 'canvas'}) {        
+        if(typeof gameCanvasId !== 'string') {
+            throw new Error('Spell: canvas id must be a string');
+        }
+        
+        if(engine !== 'canvas' && engine !== 'opengl') {
+            throw new Error('Spell: engine must be canvas or opengl');
+        }
+
+        this.switchEngine(gameCanvasId);
+        this.selectedEngine = engine;
         Spell.window.setCanvasFullWindow();
     }
 
@@ -18,10 +27,10 @@ export default class SpellRendering {
 
     renderElement = ({ method, params }) => this.engine[method](params);
 
-    switchEngine (canvasId) {
+    switchEngine (gameCanvasId) {
         this.engine = this.selectedEngine === 'canvas'
-            ? new SpellCanvasRenderEngine(canvasId)
-            : new SpellOpenGlEngine(canvasId);
+            ? new SpellCanvasRenderEngine(gameCanvasId)
+            : new SpellOpenGlEngine(gameCanvasId);
     }
 
     setBackgroundColor = (...args) => this.engine.setBackgroundColor(...args);

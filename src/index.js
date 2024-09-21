@@ -38,7 +38,7 @@ export default class Spell {
     static cartesian = SpellCartesian.prototype;
     static timmer = SpellTimmer;
 
-    static initialize (gameCanvasId, fps, engine = 'canvas') {
+    static initialize ({gameCanvasId, fps, engine = 'canvas'}) {
         Spell.keyboardSystem = new SpellKeyboard();
         Spell.math = new SpellMath();
         Spell.cartesian = new SpellCartesian();
@@ -49,8 +49,8 @@ export default class Spell {
         Spell.audio = new SpellAudio();
         Spell.mouse = new SpellMouse();
         Spell.animation = new SpellAnimation();
-        Spell.window = new SpellWindow(gameCanvasId);
-        Spell.canvas = new SpellRendering(gameCanvasId, engine);
+        Spell.window = new SpellWindow({gameCanvasId});
+        Spell.canvas = new SpellRendering({gameCanvasId, engine});
         Spell.levels = new SpellLevels();
         Spell.game = new SpellGame(fps);
         Spell.timmer = SpellTimmer;

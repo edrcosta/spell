@@ -3,8 +3,12 @@ import Spell from '.';
 export default class SpellWindow {
     element;
 
-    constructor (canvasId) {
-        const element = document.getElementById(canvasId);
+    constructor ({gameCanvasId}) {
+        if (typeof gameCanvasId !== 'string') {
+            throw new Error('SPELL: canvas id must be a string');
+        }
+   
+        const element = document.getElementById(gameCanvasId);
         if (!element) {
             throw new Error('SPELL: You must set a valid canvas ID');
         }
