@@ -2,7 +2,7 @@
   "name": "spell-engine",
   "version": "1.0.0",
   "description": "a game engine/library 2d for study ",
-  "main": "./src/index.js",
+  "main": "./dist/index.js",
   "directories": {
     "example": "examples"
   },
