@@ -29,9 +29,17 @@ export default class SpellGame {
     gameLoop = async () => {
         this.performance.startFrame();
 
-        if (this.timmer.timmerInterval === false) { this.timmer.initializeTimmer(); };
-        if (this.stopRendering) { return this.runLoopAgain(); };
-        if (Spell.isFirstFrame) { Spell.canvas.show(); };
+        if (this.timmer.timmerInterval === false) {
+            this.timmer.initializeTimmer(); 
+        };
+        
+        if (this.stopRendering) { 
+            return this.runLoopAgain(); 
+        };
+        
+        if (Spell.isFirstFrame) { 
+            Spell.canvas.show(); 
+        };
 
         this.initializeFrame();
         this.executeUserCode();

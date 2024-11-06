@@ -44,6 +44,7 @@ export default class SpellCanvasRenderEngine {
         if (typeof angle !== 'undefined') {
             const xx = width / 2;
             const yy = height / 2;
+
             const rad = angle !== 0 ? Spell.math.getRadians(angle) : 0;
 
             this.context.save();

@@ -41,7 +41,7 @@ export default class SpellMath {
 
     getRadians (angle) {
         const id = `${angle}-radian`;
-        wrapInCache(id, () => angle * Math.PI / 180);
+        return wrapInCache(id, () => angle * Math.PI / 180);
     }
 
     percentualOf (percent, ofValue) {
