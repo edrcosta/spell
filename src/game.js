@@ -30,15 +30,15 @@ export default class SpellGame {
         this.performance.startFrame();
 
         if (this.timmer.timmerInterval === false) {
-            this.timmer.initializeTimmer(); 
+            this.timmer.initializeTimmer();
         };
-        
-        if (this.stopRendering) { 
-            return this.runLoopAgain(); 
+
+        if (this.stopRendering) {
+            return this.runLoopAgain();
         };
-        
-        if (Spell.isFirstFrame) { 
-            Spell.canvas.show(); 
+
+        if (Spell.isFirstFrame) {
+            Spell.canvas.show();
         };
 
         this.initializeFrame();
@@ -64,10 +64,10 @@ export default class SpellGame {
     waitToNextFrame = () => new Promise((resolve) => {
         const startWaiting = (new Date()).getTime();
         let stop = false;
-    
+
         while (!stop) {
             stop = (new Date()).getTime() - startWaiting >= (this.frameInterval - this.performance.frameDuration);
-            
+
             if (stop) {
                 resolve(true);
                 break;

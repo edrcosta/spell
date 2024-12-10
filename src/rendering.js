@@ -7,12 +7,12 @@ export default class SpellRendering {
     selectedEngine = 'canvas';
     engine = null;
 
-    constructor ({gameCanvasId, engine = 'canvas'}) {        
-        if(typeof gameCanvasId !== 'string') {
+    constructor ({ gameCanvasId, engine = 'canvas' }) {
+        if (typeof gameCanvasId !== 'string') {
             throw new Error('Spell: canvas id must be a string');
         }
-        
-        if(engine !== 'canvas' && engine !== 'opengl') {
+
+        if (engine !== 'canvas' && engine !== 'opengl') {
             throw new Error('Spell: engine must be canvas or opengl');
         }
 
