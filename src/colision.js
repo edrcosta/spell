@@ -84,4 +84,45 @@ export default class SpellColision {
         }
         return false;
     }
+
+    isLocationInsideSquare (x, y, squareW, squareH, squareX, squareY) {
+        // Check if point (x,y) is inside the bounds of the square
+        return x >= squareX &&
+               x <= squareX + squareW &&
+               y >= squareY &&
+               y <= squareY + squareH;
+    }
+
+    isSquareInsideSquare (x1, y1, x2, y2, w1, h1, w2, h2) {
+        // Check if any corner of square1 is inside square2
+        const square1Corners = [
+            [x1, y1], // Top-left
+            [x1 + w1, y1], // Top-right
+            [x1, y1 + h1], // Bottom-left
+            [x1 + w1, y1 + h1] // Bottom-right
+        ];
+
+        // Check if any corner of square1 is inside square2
+        for (const [cornerX, cornerY] of square1Corners) {
+            if (this.isLocationInsideSquare(cornerX, cornerY, w2, h2, x2, y2)) {
+                return true;
+            }
+        }
+
+        // Check if any corner of square2 is inside square1
+        const square2Corners = [
+            [x2, y2], // Top-left
+            [x2 + w2, y2], // Top-right
+            [x2, y2 + h2], // Bottom-left
+            [x2 + w2, y2 + h2] // Bottom-right
+        ];
+
+        for (const [cornerX, cornerY] of square2Corners) {
+            if (this.isLocationInsideSquare(cornerX, cornerY, w1, h1, x1, y1)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

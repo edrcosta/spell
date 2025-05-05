@@ -12,7 +12,6 @@ module.exports = {
         './src/index.js',
         './src/keyboard.js',
         './src/levels.js',
-        './src/map-system.js',
         './src/math.js',
         './src/memory-cache.js',
         './src/mouse.js',
