@@ -50,26 +50,30 @@ export default class PlayerInput {
 
     applyKeyboard () {
         const speed = Spell.scrolling.GameState.get('charSpeed', 'persistent');
+
         // diagonal is a little bit faster so this will fix
         const disagonalSpeed = speed - 1.2;
 
-        // apply movement transformations for each position
-        if (Spell.scrolling.GameState.runtime.keys.left && Spell.scrolling.GameState.runtime.keys.down) {
-            this.move('leftDown', 'walking', -(disagonalSpeed), disagonalSpeed);
-        } else if (Spell.scrolling.GameState.runtime.keys.left && Spell.scrolling.GameState.runtime.keys.up) {
-            this.move('leftUp', 'walking', -(disagonalSpeed), -(disagonalSpeed));
-        } else if (Spell.scrolling.GameState.runtime.keys.right && Spell.scrolling.GameState.runtime.keys.down) {
-            this.move('rightUp', 'walking', +(disagonalSpeed), disagonalSpeed);
-        } else if (Spell.scrolling.GameState.runtime.keys.right && Spell.scrolling.GameState.runtime.keys.up) {
-            this.move('rightDown', 'walking', +(disagonalSpeed), -(disagonalSpeed));
-        } else if (Spell.scrolling.GameState.runtime.keys.left) {
-            this.move('left', 'walking', -(speed), 0);
-        } else if (Spell.scrolling.GameState.runtime.keys.right) {
-            this.move('right', 'walking', +(speed), 0);
-        } else if (Spell.scrolling.GameState.runtime.keys.up) {
-            this.move('up', 'walking', 0, -(speed));
-        } else if (Spell.scrolling.GameState.runtime.keys.down) {
-            this.move('down', 'walking', 0, +(speed));
+        const { left, down, up, right } = Spell.scrolling.GameState.runtime.keys;
+
+        const type = 'walking';
+
+        if (left && down) {
+            this.move('leftDown', type, -(disagonalSpeed), disagonalSpeed);
+        } else if (left && up) {
+            this.move('leftUp', type, -(disagonalSpeed), -(disagonalSpeed));
+        } else if (right && down) {
+            this.move('rightUp', type, +(disagonalSpeed), disagonalSpeed);
+        } else if (right && up) {
+            this.move('rightDown', type, +(disagonalSpeed), -(disagonalSpeed));
+        } else if (left) {
+            this.move('left', type, -(speed), 0);
+        } else if (right) {
+            this.move('right', type, +(speed), 0);
+        } else if (up) {
+            this.move('up', type, 0, -(speed));
+        } else if (down) {
+            this.move('down', type, 0, +(speed));
         }
     }
 }

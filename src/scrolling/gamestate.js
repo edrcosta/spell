@@ -9,9 +9,6 @@ export default class GameState {
     };
 
     static runtime = {
-        playerDirection: 'down', // up, down, left, right, leftUp, leftDown, rightUp, rightDown
-        playerSpeed: 'stoped', // walking, running, stoped
-        movementIncrement: { x: 0, y: 0 },
         currentPlayerSprite: null,
         mapData: [],
         colisionCheckList: [],
@@ -31,6 +28,9 @@ export default class GameState {
             five: false,
             e: false
         },
+        playerDirection: 'down', // up, down, left, right, leftUp, leftDown, rightUp, rightDown
+        playerSpeed: 'stoped', // walking, running, stoped
+        movementIncrement: { x: 0, y: 0 },
         playerScreenPosition: {
             x: 0,
             y: 0
@@ -39,7 +39,7 @@ export default class GameState {
 
     static update (state, type = 'runtime') {
         if (type === 'persistent') {
-            GameState.persistent = { ...GameState.persistent, ...state };
+            GameState.persistent = { ...GameState.persistet, ...state };
             return GameState.persistent;
         }
 

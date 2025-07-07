@@ -6,7 +6,9 @@ export default class MapColision {
     element = null;
 
     createColidableElement = (item) => {
-        if (Spell.scrolling.GameState.disabled.includes('player')) { return false; }
+        if (Spell.scrolling.GameState.disabled.includes('player')) {
+            return false;
+        }
 
         const id = `${item.component.uuid}-${item.component.id}`;
 
@@ -19,13 +21,18 @@ export default class MapColision {
     };
 
     createPlayerColidable () {
-        if (!Spell.scrolling.GameState.runtime.currentPlayerSprite) { return false; }
+        if (!Spell.scrolling.GameState.runtime.currentPlayerSprite) {
+            return false;
+        }
 
         const size = Spell.scrolling.GameState.runtime.currentPlayerSprite;
 
         Spell.colision.addElement('player');
         Spell.colision.setPosition('player', Spell.scrolling.GameState.runtime.playerScreenPosition);
-        Spell.colision.setSize('player', { width: Number(size.width), height: Number(size.height) });
+        Spell.colision.setSize('player', {
+            width: Number(size.width),
+            height: Number(size.height)
+        });
     }
 
     checkColision () {
@@ -54,7 +61,9 @@ export default class MapColision {
     }
 
     isColiding () {
-        if (Spell.scrolling.GameState.runtime.currentPlayerSprite === null) { return false; }
+        if (Spell.scrolling.GameState.runtime.currentPlayerSprite === null) {
+            return false;
+        }
 
         this.reset();
         this.createPlayerColidable();

@@ -45,7 +45,9 @@ export default class Player {
     }
 
     debugPosition () {
-        if (Spell.scrolling.GameState.disabled.includes('debug.playerposition')) return false;
+        if (Spell.scrolling.GameState.disabled.includes('debug.playerposition')) {
+            return false;
+        }
 
         const x = parseFloat(Spell.scrolling.GameState.persistent.position.x).toFixed(4);
         const y = parseFloat(Spell.scrolling.GameState.persistent.position.y).toFixed(4);
@@ -76,7 +78,9 @@ export default class Player {
     }
 
     getCurrent () {
-        if (Spell.scrolling.GameState.runtime.playerSpeed === 'stoped') { return this.stopedSprites[Spell.scrolling.GameState.get('playerDirection')]; }
+        if (Spell.scrolling.GameState.runtime.playerSpeed === 'stoped') {
+            return this.stopedSprites[Spell.scrolling.GameState.get('playerDirection')];
+        }
         return Spell.animation.getCurrentFrame(`${Spell.scrolling.GameState.runtime.playerSpeed}_${Spell.scrolling.GameState.get('playerDirection')}`);
     }
 
