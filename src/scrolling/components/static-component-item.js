@@ -1,6 +1,18 @@
 import GameState from '../gamestate';
 
 export default class StaticComponentItem {
+    custom = false;
+    sprite = {
+        width: 0,
+        height: 0,
+        position: {
+            x: 0,
+            y: 0
+        }
+    };
+
+    rigidAreas = [];
+
     initialize (position, meta) {
         const age = meta?.age ? meta.age : 0;
 
