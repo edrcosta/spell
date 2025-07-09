@@ -1,27 +1,12 @@
-export default class CustomComponentItem {
+import SpellScrollingComponent from './component';
+
+export default class CustomComponentItem extends SpellScrollingComponent {
     custom = true;
-    sprite = {
-        width: 0,
-        height: 0,
-        position: {
-            x: 0,
-            y: 0
-        }
-    };
 
-    rigidAreas = [];
-
-    preInitialize (position, meta) {
-        if (meta.size) {
-            this.sprite.width = meta.size.width;
-            this.sprite.height = meta.size.height;
-        }
-
-        if (meta.color) {
-            this.color = meta.color;
-        }
-
-        let { x, y } = position;
+    preInitialize ({ x, y }, { width = 0, height = 0, color = 'red' }) {
+        this.sprite.width = width;
+        this.sprite.height = height;
+        this.color = color;
 
         x = x -= (this.sprite.width / 2);
         y = y -= (this.sprite.height / 2);

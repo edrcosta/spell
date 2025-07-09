@@ -1,25 +1,14 @@
 import GameState from '../gamestate';
+import SpellScrollingComponent from './component';
 
-export default class RigidComponentItem {
-    custom = false;
-    sprite = {
-        width: 0,
-        height: 0,
-        position: {
-            x: 0,
-            y: 0
-        }
-    };
-
-    rigidAreas = [];
-
-    initialize (position, meta) {
-        this.age = meta?.age || 0;
-        const current = this.sprites[this.age];
+export default class RigidComponentItem extends SpellScrollingComponent {
+    initialize ({ x, y }, { age = 0 }) {
+        this.age = age;
+        const current = this.sprites[age];
 
         this.rigidAreas = [current.rigid];
         this.sprite = GameState.runtime.images[current.id].clone();
-        this.sprite.position.x = Number(position.x);
-        this.sprite.position.y = Number(position.y);
+        this.sprite.position.x = Number(x);
+        this.sprite.position.y = Number(y);
     }
 }
