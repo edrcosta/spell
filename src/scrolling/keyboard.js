@@ -37,14 +37,16 @@ export default class PlayerInput {
     }
 
     onKeyEvent = (event, set) => {
-        Spell.scrolling.GameState.runtime.keys[this.keyNames[event.keyCode]] = set;
+        Spell.scrolling.GameState.get('keys')[this.keyNames[event.keyCode]] = set;
     };
 
     move = (direction, speed, x, y) => {
         if (Spell.scrolling.GameState.get('playerDirection') === direction) {
-            Spell.scrolling.GameState.runtime.movementIncrement = { x, y };
+            Spell.scrolling.GameState.update({
+                movementIncrement: { x, y }
+            }, 'runtime');
         }
-        Spell.scrolling.GameState.runtime.playerSpeed = speed;
+        Spell.scrolling.GameState.set('playerSpeed', speed, 'runtime');
         Spell.scrolling.GameState.set('playerDirection', direction, 'runtime');
     };
 

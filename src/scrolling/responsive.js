@@ -1,8 +1,5 @@
 import Spell from '..';
 
-/**
- * Repositioning all elements when the window is resized, to keep ratio and position.
- */
 export default function changeResponsiveSettings () {
     if (!Spell.window.horizontal) return;
 

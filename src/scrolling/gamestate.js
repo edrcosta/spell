@@ -5,7 +5,7 @@ export default class GameState {
 
     static persistent = {
         charSpeed: 8,
-        position: { x: -100, y: -100 }
+        position: { x: 0, y: 0 }
     };
 
     static runtime = {
@@ -39,11 +39,17 @@ export default class GameState {
 
     static update (state, type = 'runtime') {
         if (type === 'persistent') {
-            GameState.persistent = { ...GameState.persistet, ...state };
+            GameState.persistent = {
+                ...GameState.persistent,
+                ...state
+            };
             return GameState.persistent;
         }
 
-        GameState.runtime = { ...GameState.runtime, ...state };
+        GameState.runtime = {
+            ...GameState.runtime,
+            ...state
+        };
         return GameState.runtime;
     }
 
