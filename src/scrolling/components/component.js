@@ -12,5 +12,6 @@ export default class SpellScrollingComponent {
         }
     };
 
+    aditionalSprites = [];
     rigidAreas = [];
 }
