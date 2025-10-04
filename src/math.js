@@ -14,6 +14,10 @@ export default class SpellMath {
         return array[this.getRandomNumber(0, (array.length - 1))];
     };
 
+    getTrueByChangeOf (change) {
+        return Math.random() < change;
+    }
+
     getRandomBool (min, max) {
         if (min > max) {
             throw new Error('SPELL: min must be less or equal max');
@@ -65,3 +69,4 @@ export default class SpellMath {
         });
     }
 }
+

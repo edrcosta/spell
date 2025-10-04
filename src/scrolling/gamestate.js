@@ -5,7 +5,8 @@ export default class GameState {
 
     static persistent = {
         charSpeed: 8,
-        position: { x: 0, y: 0 }
+        position: { x: 0, y: 0 },
+        inventory: []
     };
 
     static runtime = {
@@ -20,21 +21,18 @@ export default class GameState {
             up: false,
             down: false,
             right: false,
-            left: false,
-            one: false,
-            two: false,
-            three: false,
-            four: false,
-            five: false,
-            e: false
+            left: false
         },
-        playerDirection: 'down', // up, down, left, right, leftUp, leftDown, rightUp, rightDown
-        playerSpeed: 'stoped', // walking, running, stoped
         movementIncrement: { x: 0, y: 0 },
         playerScreenPosition: {
             x: 0,
             y: 0
-        }
+        },
+        // 8 direction player
+        playerDirection: 'down', // up, down, left, right, leftUp, leftDown, rightUp, rightDown
+        playerSpeed: 'stoped', // walking, running, stoped
+        // space ship player
+        rotation: 0
     };
 
     static update (state, type = 'runtime') {
@@ -67,5 +65,25 @@ export default class GameState {
             return GameState.persistent[key] || null;
         }
         return GameState.runtime[key] || null;
+    }
+
+    static increment (key, value, type = 'runtime') {
+        if (type === 'persistent') {
+            GameState.persistent[key] += value;
+            return;
+        }
+        GameState.runtime[key] += value;
+    }
+
+    static push (key, value, type = 'runtime') {
+        if (!GameState.persistent[key]) {
+            GameState.persistent[key] = [];
+        }
+
+        if (type === 'persistent') {
+            GameState.persistent[key].push(value);
+            return;
+        }
+        GameState.runtime[key].push(value);
     }
 }

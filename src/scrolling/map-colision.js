@@ -27,32 +27,88 @@ export default class MapColision {
 
         const size = Spell.scrolling.GameState.runtime.currentPlayerSprite;
 
-        Spell.colision.addElement('player');
-        Spell.colision.setPosition('player', Spell.scrolling.GameState.runtime.playerScreenPosition);
-        Spell.colision.setSize('player', {
-            width: Number(size.width),
-            height: Number(size.height)
+        this.createPlayerColidableElement({
+            id: 'main-player',
+            width: size.width,
+            height: size.height
+        });
+
+        const rigidAreas = Spell.scrolling.GameState.get('player', 'runtime').rigidAreas || [];
+
+        for (let i = 0; i < rigidAreas.length; i++) {
+            const area = rigidAreas[i];
+            this.createColidableElement({
+                id: `player-${i}`,
+                width: area.width,
+                height: area.height
+            });
+        }
+    }
+
+    createPlayerColidableElement ({
+        id,
+        width,
+        height
+    }) {
+        const pos = Spell.scrolling.GameState.runtime.playerScreenPosition;
+        const position = {
+            x: pos.x,
+            y: pos.y
+        };
+
+        Spell.colision.addElement(id);
+        Spell.colision.setPosition(id, position);
+        Spell.colision.setSize(id, {
+            width: Number(width),
+            height: Number(height)
         });
     }
 
     checkColision () {
-        const debugColision = !Spell.scrolling.GameState.disabled.includes('debug.colision');
+        const debugColision = Spell.debug.get('COLISION');
 
         let isColiding = false;
         this.element = false;
 
         for (const id of this.colidable) {
-            if (debugColision) {
-                Spell.colision.debug('player', true);
-                Spell.colision.debug(id, true);
+            let isElementColiding = false;
+
+            if (Spell.colision.checkBoxColision('main-player', id)) {
+                isColiding = true;
+                isElementColiding = true;
+                this.onColisionWith(id);
             }
 
-            if (Spell.colision.checkBoxColision('player', id)) {
-                this.element = this.components[id];
-                isColiding = true;
+            const rigidAreas = Spell.scrolling.GameState.get('player', 'runtime').rigidAreas || [];
+
+            for (let i = 0; i < rigidAreas.length; i++) {
+                if (Spell.colision.checkBoxColision(`player-${i}`, id)) {
+                    isColiding = true;
+                    isElementColiding = true;
+                    this.onColisionWith(id);
+                }
+            }
+
+            if (debugColision) {
+                Spell.colision.debug('main-player', true, isColiding ? 'red' : '#b5b1a5');
+                Spell.colision.debug(id, true, isElementColiding ? 'red' : 'grey');
+
+                const rigidAreas = Spell.scrolling.GameState.get('player', 'runtime').rigidAreas || [];
+
+                for (let i = 0; i < rigidAreas.length; i++) {
+                    Spell.colision.debug(`player-${i}`, true);
+                }
             }
         }
-        return isColiding;
+        return isColiding ? this.element : false;
+    }
+
+    onColisionWith (id) {
+        this.element = this.components[id];
+
+        if (typeof this.element.class.onColision === 'function') {
+            this.components[id].class.onColision();
+        }
     }
 
     reset () {
@@ -64,11 +120,10 @@ export default class MapColision {
         if (Spell.scrolling.GameState.runtime.currentPlayerSprite === null) {
             return false;
         }
-
         this.reset();
         this.createPlayerColidable();
 
-        Spell.scrolling.GameState.runtime.colisionCheckList.forEach(this.createColidableElement);
+        Spell.scrolling.GameState.get('colisionCheckList').forEach(this.createColidableElement);
 
         return this.checkColision();
     }

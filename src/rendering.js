@@ -37,6 +37,10 @@ export default class SpellRendering {
     printscreen = () => this.engine.element.toDataURL('png');
     clear = () => this.engine.clear();
     show = () => this.engine.show();
+    increaseZoom = () => this.engine.increaseZoom();
+    decreaseZoom = () => this.engine.decreaseZoom();
+    resetZoom = () => this.engine.resetZoom && this.engine.resetZoom();
+    getZoomScale = () => this.engine.getZoomScale ? this.engine.getZoomScale() : 1.0;
 
     setLayer = SpellRenderStack.setLayer;
     drawBlock = SpellRenderStack.push('drawBlock');
@@ -45,4 +49,5 @@ export default class SpellRendering {
     drawPixel = SpellRenderStack.push('drawPixel');
     drawLine = SpellRenderStack.push('drawLine');
     drawImages = SpellRenderStack.pushArr('drawImage');
+    drawCircle = SpellRenderStack.push('drawCircle');
 }

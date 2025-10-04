@@ -30,44 +30,50 @@ export default class GameMap {
         }
 
         this.visibleComponents = [];
-        Spell.scrolling.GameState.runtime.colisionCheckList = [];
+        Spell.scrolling.GameState.set('colisionCheckList', [], 'runtime');
+
+        this.currentMapArr = this.currentMapArr
+            .filter(component => !this.componentsToRemove.has(component.uuid));
 
         for (const component of this.currentMapArr) {
             this.processComponent(component);
         }
 
-        this.currentMapArr = this.currentMapArr
-            .filter(component => !this.componentsToRemove.has(component.uuid));
-
         this.applyMovement();
     };
 
     processComponent (component) {
-        if (component.class.mapControllerRemoveElement) {
-            this.removeFromRenderList(component);
+        if (component.class.removeMeFromRenderTree) {
+            this.scheduleRemoval(component);
             return;
         }
-
         this.visibleComponents.push(component);
 
         Spell.scrolling.GameComponents.renderComponent(component);
     }
 
-    removeFromRenderList (component) {
+    scheduleRemoval (component) {
         this.componentsToRemove.add(component.uuid);
 
         component.aditionalSprites?.forEach(aditionalSprite => this.componentsToRemove.add(aditionalSprite.uuid));
     }
 
     applyMovement () {
-        if (!this.isColiding(Spell.scrolling.GameState.runtime.movementIncrement.x, Spell.scrolling.GameState.runtime.movementIncrement.y)) {
-            this.movePlayer();
-        } else {
-            this.colisionOrientation = Spell.scrolling.GameState.get('playerDirection');
+        const colidingComponent = this.isColiding(Spell.scrolling.GameState.runtime.movementIncrement.x, Spell.scrolling.GameState.runtime.movementIncrement.y);
 
-            if (this.colision.element && typeof this.colision.element.class.onColide === 'function') {
-                this.colision.element.class.onColide();
-            }
+        if (!colidingComponent && !colidingComponent?.class?.traversableColision) {
+            this.movePlayer();
+            return;
+        }
+
+        if (colidingComponent?.class?.traversableColision) {
+            this.movePlayer();
+        }
+
+        this.colisionOrientation = Spell.scrolling.GameState.get('playerDirection');
+
+        if (this.colision.element && typeof this.colision.element.class.onColision === 'function') {
+            this.colision.element.class.onColision(this.colision.element);
         }
     }
 
@@ -84,7 +90,7 @@ export default class GameMap {
     }
 
     pushToColisionList = ({ component, rigidBodyElement, incrementX, incrementY }) => {
-        if (!rigidBodyElement) return;
+        if (!rigidBodyElement || !component.class.custom) return;
 
         const colisionItem = {
             x: Number(component.class.sprite.position.x) - incrementX + rigidBodyElement.marginLeft,
@@ -93,7 +99,10 @@ export default class GameMap {
             component
         };
 
-        Spell.scrolling.GameState.runtime.colisionCheckList.push(colisionItem);
+        const colisionCheckList = Spell.scrolling.GameState.get('colisionCheckList') || [];
+        colisionCheckList.push(colisionItem);
+
+        Spell.scrolling.GameState.set('colisionCheckList', colisionCheckList, 'runtime');
     };
 
     isColiding (incrementX, incrementY) {

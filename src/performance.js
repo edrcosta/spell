@@ -1,32 +1,36 @@
 import Spell from '.';
 
 export default class SpellPerformance {
-    totalDuration;
     frameDuration;
-    waitDuration;
+    framesPersecond;
+    iddleTime = 0;
+
+    constructor (fps) {
+        this.framesPersecond = fps;
+    }
 
     isEnabled = () => Spell.debug.get('DEBUG') && Spell.debug.get('DEBUG_PERFORMANCE');
 
     startFrame = () => {
         const now = (new Date()).getTime();
-        this.totalDuration = now;
         this.frameDuration = now;
     };
 
     endFrame = () => {
         this.frameDuration = (new Date()).getTime() - this.frameDuration;
-        this.waitDuration = (new Date()).getTime();
+        this.iddleTime = (new Date()).getTime();
     };
 
     getReport = () => {
-        this.waitDuration = (new Date()).getTime() - this.waitDuration;
-        this.totalDuration = (new Date()).getTime() - this.totalDuration;
+        this.iddleTime = (new Date()).getTime() - this.iddleTime;
 
         if (this.isEnabled()) {
             console.log({
+                framesPerSecond: this.framesPersecond,
+                idealFrameDuration: Number(1000 / this.framesPersecond),
                 frameDuration: this.frameDuration,
-                waitDuration: this.waitDuration,
-                totalDuration: this.totalDuration
+                idle: this.iddleTime,
+                renderedFrameDuration: this.frameDuration + this.iddleTime
             });
         }
     };

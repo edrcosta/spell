@@ -43,4 +43,12 @@ export default class SpellOpenGlEngine {
     drawImage = (sprite) => {};
 
     renderPixel ({ x, y, color, pixelW, pixelH }) {}
+
+    drawCircle ({ x, y, color, radius, width, fill = false }) {}
+
+    increaseZoom () {}
+
+    decreaseZoom () {}
+
+    resetZoom () {}
 }

@@ -14,7 +14,7 @@ export default class SpellGame {
     constructor (framesPersecond) {
         this.framesPersecond = parseInt(framesPersecond);
         this.frameInterval = 1000 / this.framesPersecond;
-        this.performance = new SpellPerformance();
+        this.performance = new SpellPerformance(this.framesPersecond);
         this.timmer = new SpellTimmer();
         Spell.initialized = true;
     }
@@ -22,7 +22,6 @@ export default class SpellGame {
     start = this.runLoopAgain;
 
     runLoopAgain () {
-        // call a loop without blocking the main thread
         window.requestAnimationFrame(this.gameLoop);
     }
 
@@ -48,7 +47,6 @@ export default class SpellGame {
         this.performance.endFrame();
         await this.waitToNextFrame();
         this.performance.getReport();
-
         this.runLoopAgain();
     };
 

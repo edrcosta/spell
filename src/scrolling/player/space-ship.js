@@ -1,18 +1,12 @@
-import Spell from '../';
-import PlayerInput from './keyboard';
+import Spell from '../../';
+import RotationalKeyboard from '../keyboards/rotational-keyboard';
 
-/**
- * Side scroller player class
- *
- * 8 direction player movement/rendering
- */
-export default class Player {
-    count = 0;
-    toStop = 0;
-    stopedSprites = null;
+export default class SpaceShipPlayer {
+    sprite = null;
+    input = null;
 
     constructor () {
-        this.input = new PlayerInput();
+        this.input = new RotationalKeyboard();
     }
 
     render () {
@@ -20,6 +14,7 @@ export default class Player {
 
         if (!Spell.scrolling.GameState.disabled.includes('keyboard')) {
             this.input.applyKeyboard();
+            this.applyConstantMovement();
         }
 
         if (!Spell.scrolling.GameState.disabled.includes('player')) {
@@ -30,17 +25,16 @@ export default class Player {
     }
 
     renderPlayer () {
-        if (Spell.scrolling.GameState.get('playerDirection') !== 'stoped') {
-            this.stopAfterMove();
-        }
-
-        const current = this.getCurrent();
+        const current = this.sprite;
         current.position = this.getCenter(current);
+        current.angle = Spell.scrolling.GameState.get('rotation');
 
         Spell.scrolling.GameState.runtime.playerScreenPosition = current.position;
         Spell.scrolling.GameState.runtime.currentPlayerSprite = current;
 
+        Spell.canvas.setLayer(1);
         this.debugPosition();
+        Spell.canvas.setLayer(0);
         Spell.canvas.drawImage(current);
     }
 
@@ -68,33 +62,24 @@ export default class Player {
         y: Spell.window.vertical(50) - (currentPlayerSprite.height / 2)
     });
 
-    stopAfterMove () {
-        this.toStop++;
-        if (this.toStop > 20) {
-            Spell.scrolling.GameState.runtime.playerSpeed = 'stoped';
-            this.count = 0;
-            this.toStop = 0;
-        }
+    applyConstantMovement () {
+        const currentRotation = Spell.scrolling.GameState.get('rotation');
+        const baseSpeed = Spell.scrolling.GameState.get('charSpeed', 'persistent');
+
+        const speed = baseSpeed;
+        const adjustedAngle = currentRotation - 90;
+        const radians = adjustedAngle * (Math.PI / 180);
+
+        Spell.scrolling.GameState.set('currentSpeed', speed);
+        Spell.scrolling.GameState.update({
+            movementIncrement: {
+                x: Math.cos(radians) * speed,
+                y: Math.sin(radians) * speed
+            }
+        });
     }
 
-    getCurrent () {
-        if (Spell.scrolling.GameState.runtime.playerSpeed === 'stoped') {
-            return this.stopedSprites[Spell.scrolling.GameState.get('playerDirection')];
-        }
-        return Spell.animation.getCurrentFrame(`${Spell.scrolling.GameState.runtime.playerSpeed}_${Spell.scrolling.GameState.get('playerDirection')}`);
-    }
-
-    addAnimations ({
-        walking,
-        stopped
-    }) {
-        this.stopedSprites = stopped;
-
-        for (const id of Object.keys(walking)) {
-            Spell.animation.create(id, {
-                frames: walking[id],
-                interval: 3
-            });
-        }
+    addAnimations (sprite) {
+        this.sprite = sprite;
     }
 }

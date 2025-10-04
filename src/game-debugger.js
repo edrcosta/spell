@@ -2,7 +2,8 @@ export default class SpellDebugger {
     settings = {
         DEBUG: false,
         DEBUG_PERFORMANCE: false,
-        DEBUG_SPRITE_LOADING: false
+        DEBUG_SPRITE_LOADING: false,
+        COLISION: false
     };
 
     get = setting => typeof this.settings[setting] === 'boolean' ? this.settings[setting] : undefined;

@@ -7,7 +7,8 @@ import StaticComponentItem from './components/static-component-item';
 import GameComponents from './component';
 import GameMap from './map';
 import changeResponsiveSettings from './responsive';
-import Player from './player';
+import Player from './player/index';
+import AnimationComponentItem from './components/static-animation-component';
 
 const SpellScrolling = {
     HydrateComponents,
@@ -19,7 +20,8 @@ const SpellScrolling = {
     ComponentTypes: {
         CustomComponentItem,
         RigidComponentItem,
-        StaticComponentItem
+        StaticComponentItem,
+        AnimationComponentItem
     },
     changeResponsiveSettings
 };

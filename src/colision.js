@@ -37,13 +37,13 @@ export default class SpellColision {
         this.elements[id].size = { width, height };
     }
 
-    debug (id, displayName) {
+    debug (id, displayName, color) {
         this.throwIfNotFound(id);
         if (this.isOnScreen(id)) {
             const element = this.elements[id];
             Spell.canvas.currentLayer = 10;
 
-            Spell.canvas.drawPixel({ ...element.position, ...element.size, color: 'red' });
+            Spell.canvas.drawPixel({ ...element.position, ...element.size, color: color || 'red' });
 
             if (displayName) {
                 Spell.canvas.drawText({

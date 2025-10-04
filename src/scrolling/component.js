@@ -7,37 +7,47 @@ export default class GameComponents {
 
         if (!GameComponents.isVisible(component.class.sprite)) return;
 
-        if (component.class.custom === true) {
+        Spell.canvas.setLayer(component.class.layer || 0);
+
+        if (typeof component.class.render === 'function') {
             component.class.render();
         } else {
-            Spell.canvas.setLayer(component.class.layer ? component.class.layer : 0);
             Spell.canvas.drawImage(component.class.sprite);
         }
     }
 
     static isVisible = (sprite) => {
+        const zoomScale = Spell.canvas.getZoomScale();
         const { x, y } = sprite.position;
 
-        if (sprite.width > Spell.window.horizontal(20)) {
+        const largeWidthThreshold = Spell.window.horizontal(20) / zoomScale;
+        const largeHeightThreshold = Spell.window.vertical(20) / zoomScale;
+
+        if (sprite.width > largeWidthThreshold) {
             return true;
         }
 
-        if (sprite.height > Spell.window.vertical(20)) {
+        if (sprite.height > largeHeightThreshold) {
             return true;
         }
 
-        return x >= -(Spell.window.horizontal(150)) &&
-            y >= -(Spell.window.horizontal(150)) &&
-            x < (Spell.window.horizontal(150) + sprite.width) &&
-            y < (Spell.window.vertical(150) + sprite.height);
+        const horizontalBound = Spell.window.horizontal(150) / zoomScale;
+        const verticalBound = Spell.window.vertical(150) / zoomScale;
+
+        return x >= -horizontalBound &&
+            y >= -horizontalBound &&
+            x < (horizontalBound + sprite.width) &&
+            y < (verticalBound + sprite.height);
     };
 
     static isCloserToUser = (sprite) => {
-        if (sprite.width > Spell.window.horizontal(20)) {
+        const zoomScale = Spell.canvas.getZoomScale();
+
+        if (sprite.width > Spell.window.horizontal(50)) {
             return true;
         }
 
-        if (sprite.height > Spell.window.vertical(20)) {
+        if (sprite.height > Spell.window.vertical(50)) {
             return true;
         }
 
@@ -46,8 +56,8 @@ export default class GameComponents {
         const boundX = Spell.scrolling.GameState.runtime.playerScreenPosition.x - 30;
         const boundY = Spell.scrolling.GameState.runtime.playerScreenPosition.y - 30;
 
-        const w = sprite.width << 2;
-        const h = sprite.height << 2;
+        const w = (sprite.width << 2) / zoomScale;
+        const h = (sprite.height << 2) / zoomScale;
 
         return x > boundX - w &&
                 y > boundY - h &&

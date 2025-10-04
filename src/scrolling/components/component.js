@@ -1,5 +1,6 @@
 export default class SpellScrollingComponent {
     custom = false;
+    metadata = {};
     layer = 0;
     age = 0;
 
