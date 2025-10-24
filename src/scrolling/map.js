@@ -1,4 +1,5 @@
 import Spell from '..';
+import { GameSession } from './game-session';
 import GameState from './gamestate';
 import hydrateComponent from './hydrate';
 import MapColision from './map-colision';
@@ -78,13 +79,15 @@ export default class GameMap {
     }
 
     movePlayer () {
+        const currentPosition = GameSession.getCurrentPosition();
+
         if (Spell.scrolling.GameState.runtime.movementIncrement.x !== 0) {
-            Spell.scrolling.GameState.persistent.position.x -= Spell.scrolling.GameState.runtime.movementIncrement.x;
+            currentPosition.x -= Spell.scrolling.GameState.runtime.movementIncrement.x;
             Spell.scrolling.GameState.runtime.movementIncrement.x = 0;
         }
 
         if (Spell.scrolling.GameState.runtime.movementIncrement.y !== 0) {
-            Spell.scrolling.GameState.persistent.position.y -= Spell.scrolling.GameState.runtime.movementIncrement.y;
+            currentPosition.y -= Spell.scrolling.GameState.runtime.movementIncrement.y;
             Spell.scrolling.GameState.runtime.movementIncrement.y = 0;
         }
     }

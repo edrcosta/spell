@@ -14,6 +14,7 @@ export default class SpellCanvasRenderEngine {
         }
         this.element = element;
         this.context = element.getContext('2d');
+        this.context.imageSmoothingEnabled = false;
     }
 
     clear = () => {
@@ -99,9 +100,7 @@ export default class SpellCanvasRenderEngine {
     drawPixel ({ x, y, color, width, height }) {
         if (typeof height === 'undefined') { height = width; };
         this.context.fillStyle = color;
-        const pad = 0.5;
-        this.context.fillRect(x - pad / 2, y, width + pad, height);
-        this.context.fillRect(x, y - pad / 2, width, height + pad);
+        this.context.fillRect(x, y, width, height);
     }
 
     drawCircle ({ x, y, color, radius, width, fill = false }) {

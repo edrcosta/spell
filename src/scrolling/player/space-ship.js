@@ -70,7 +70,6 @@ export default class SpaceShipPlayer {
         const adjustedAngle = currentRotation - 90;
         const radians = adjustedAngle * (Math.PI / 180);
 
-        Spell.scrolling.GameState.set('currentSpeed', speed);
         Spell.scrolling.GameState.update({
             movementIncrement: {
                 x: Math.cos(radians) * speed,

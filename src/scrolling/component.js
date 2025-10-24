@@ -1,9 +1,12 @@
 import Spell from '../index';
+import { GameSession } from './game-session';
 
 export default class GameComponents {
     static renderComponent (component) {
-        component.class.sprite.position.x = component.position.x + Spell.scrolling.GameState.persistent.position.x;
-        component.class.sprite.position.y = component.position.y + Spell.scrolling.GameState.persistent.position.y;
+        const currentPosition = GameSession.getCurrentPosition();
+
+        component.class.sprite.position.x = component.position.x + currentPosition.x;
+        component.class.sprite.position.y = component.position.y + currentPosition.y;
 
         if (!GameComponents.isVisible(component.class.sprite)) return;
 
