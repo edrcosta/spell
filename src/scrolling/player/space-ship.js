@@ -32,29 +32,8 @@ export default class SpaceShipPlayer {
         Spell.scrolling.GameState.runtime.playerScreenPosition = current.position;
         Spell.scrolling.GameState.runtime.currentPlayerSprite = current;
 
-        Spell.canvas.setLayer(1);
-        this.debugPosition();
         Spell.canvas.setLayer(0);
         Spell.canvas.drawImage(current);
-    }
-
-    debugPosition () {
-        if (Spell.scrolling.GameState.disabled.includes('debug.playerposition')) {
-            return false;
-        }
-
-        const x = parseFloat(Spell.scrolling.GameState.persistent.position.x).toFixed(4);
-        const y = parseFloat(Spell.scrolling.GameState.persistent.position.y).toFixed(4);
-
-        Spell.canvas.drawText({
-            text: `X:${x}, Y:${y}`,
-            color: 'red',
-            size: 20,
-            position: {
-                x: Spell.window.horizontal(10),
-                y: Spell.window.vertical(90)
-            }
-        });
     }
 
     getCenter = (currentPlayerSprite) => ({

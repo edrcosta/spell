@@ -17,7 +17,6 @@ export default class Player {
 
     render = (...args) => this.handler.render(...args);
     renderPlayer = (...args) => this.handler.renderPlayer(...args);
-    debugPosition = (...args) => this.handler.debugPosition(...args);
     getCenter = (...args) => this.handler.getCenter(...args);
     stopAfterMove = (...args) => this.handler.stopAfterMove(...args);
     addAnimations = (...args) => this.handler.addAnimations(...args);
