@@ -48,14 +48,14 @@ export default class SpellGame {
 
         this.frameDuration = performance.now() - start;
         this.iddleTime = Math.max(0, this.frameInterval - this.frameDuration);
-        this.renderingTime = +(this.frameDuration + this.iddleTime).toFixed(4)
+        this.renderingTime = +(this.frameDuration + this.iddleTime).toFixed(4);
 
         await this.waitToNextFrame(this.iddleTime);
 
         this.fullLoopTime = performance.now() - loopstart;
         this.currentFPS = (1000 / this.fullLoopTime).toFixed(2);
 
-        Spell.debug.get("DEBUG_PERFORMANCE") && console.table({
+        Spell.debug.get('DEBUG_PERFORMANCE') && console.table({
             setupFPS: this.desiredFPS,
             FPS: this.currentFPS,
             frameDuration: +this.frameDuration.toFixed(4),
@@ -63,10 +63,10 @@ export default class SpellGame {
             renderingTime: this.renderingTime,
             fullLoopTime: this.fullLoopTime,
             engineDrift: this.fullLoopTime - this.renderingTime,
-            isFPSOK:  this.fullLoopTime <= this.currentFPS ,
+            isFPSOK: this.fullLoopTime <= this.currentFPS,
             memory: Spell.math.byteToMb(Math.max(window.performance.memory.totalJSHeapSize, window.performance.memory.usedJSHeapSize))
-        })
-        
+        });
+
         this.runLoopAgain();
     };
 
@@ -80,12 +80,12 @@ export default class SpellGame {
     }
 
     waitToNextFrame = (waitFor) => {
-        if(waitFor <= 0) return;
+        if (waitFor <= 0) return;
         const start = performance.now();
 
         return new Promise((resolve) => {
             // for some reason setTimeout takes a lot even do while loop block the main thread it takes less time.
-            while(performance.now() - start <= waitFor) {
+            while (performance.now() - start <= waitFor) {
                 // do nothing
             }
             resolve();
