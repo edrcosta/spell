@@ -1,21 +1,23 @@
 import Spell from '.';
 import SpellMouse from './mouse';
-import SpellPerformance from './performance';
 import SpellTimmer from './timmer';
 
 export default class SpellGame {
-    frameCount = 0;
-    framesPersecond = 40;
+    // fps control
+    desiredFPS = 40;
     frameInterval = 0;
+    frameDuration = 0;
+
+    // game loop
     userGameCallback = false;
-    performance;
+    halt = false;
     keys = [];
 
-    constructor (framesPersecond) {
-        this.framesPersecond = parseInt(framesPersecond);
-        this.frameInterval = 1000 / this.framesPersecond;
-        this.performance = new SpellPerformance(this.framesPersecond);
+    constructor (desiredFPS) {
+        this.desiredFPS = parseInt(desiredFPS);
+        this.frameInterval = 1000 / this.desiredFPS;
         this.timmer = new SpellTimmer();
+
         Spell.initialized = true;
     }
 
@@ -26,27 +28,45 @@ export default class SpellGame {
     }
 
     gameLoop = async () => {
-        this.performance.startFrame();
+        const loopstart = performance.now();
+
+        if (Spell.isFirstFrame) Spell.canvas.show();
 
         if (this.timmer.timmerInterval === false) {
             this.timmer.initializeTimmer();
         };
 
-        if (this.stopRendering) {
+        if (this.halt) {
             return this.runLoopAgain();
         };
 
-        if (Spell.isFirstFrame) {
-            Spell.canvas.show();
-        };
+        const start = performance.now();
 
         this.initializeFrame();
         this.executeUserCode();
         this.resetFrame();
 
-        this.performance.endFrame();
-        await this.waitToNextFrame();
-        this.performance.getReport();
+        this.frameDuration = performance.now() - start;
+        this.iddleTime = Math.max(0, this.frameInterval - this.frameDuration);
+        this.renderingTime = +(this.frameDuration + this.iddleTime).toFixed(4)
+
+        await this.waitToNextFrame(this.iddleTime);
+
+        this.fullLoopTime = performance.now() - loopstart;
+        this.currentFPS = (1000 / this.fullLoopTime).toFixed(2);
+
+        Spell.debug.get("DEBUG_PERFORMANCE") && console.table({
+            setupFPS: this.desiredFPS,
+            FPS: this.currentFPS,
+            frameDuration: +this.frameDuration.toFixed(4),
+            idleTime: +this.iddleTime.toFixed(4),
+            renderingTime: this.renderingTime,
+            fullLoopTime: this.fullLoopTime,
+            engineDrift: this.fullLoopTime - this.renderingTime,
+            isFPSOK:  this.fullLoopTime <= this.currentFPS ,
+            memory: Spell.math.byteToMb(Math.max(window.performance.memory.totalJSHeapSize, window.performance.memory.usedJSHeapSize))
+        })
+        
         this.runLoopAgain();
     };
 
@@ -59,19 +79,18 @@ export default class SpellGame {
         }
     }
 
-    waitToNextFrame = () => new Promise((resolve) => {
-        const startWaiting = (new Date()).getTime();
-        let stop = false;
+    waitToNextFrame = (waitFor) => {
+        if(waitFor <= 0) return;
+        const start = performance.now();
 
-        while (!stop) {
-            stop = (new Date()).getTime() - startWaiting >= (this.frameInterval - this.performance.frameDuration);
-
-            if (stop) {
-                resolve(true);
-                break;
+        return new Promise((resolve) => {
+            // for some reason setTimeout takes a lot even do while loop block the main thread it takes less time.
+            while(performance.now() - start <= waitFor) {
+                // do nothing
             }
-        }
-    });
+            resolve();
+        });
+    };
 
     setGameLoop (userGameCallback) {
         if (typeof userGameCallback !== 'function') {
@@ -84,7 +103,6 @@ export default class SpellGame {
         Spell.game = this;
         Spell.keyboard = Spell.keyboardSystem.keyPress;
         Spell.isFirstFrame = this.isFirstFrame;
-        Spell.frameCount = this.frameCount;
         Spell.render = {
             stop: this.renderStop,
             play: this.renderGo,
@@ -96,7 +114,6 @@ export default class SpellGame {
         if (this.keys) {
             Spell.keyboardSystem.resetKeyboard(this.keys);
         }
-        this.frameCount++;
         SpellMouse.clicked = false;
         Spell.isFirstFrame = false;
         Spell.isNextHalfSecond = false;

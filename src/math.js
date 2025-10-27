@@ -68,5 +68,7 @@ export default class SpellMath {
             return { r, g, b };
         });
     }
+
+    byteToMb = (bytes) => Math.round(bytes / 1024 / 1024 * 100) / 100;
 }
 
